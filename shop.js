@@ -3,7 +3,7 @@ const SHOP_ITEMS = [
   { id: 'doubleJump', name: 'Double Jump', description: 'Skok ve vzduchu', price: 50, type: 'permanent' },
   { id: 'shield', name: 'Shield', description: 'Prezije 1 naraz do spiku', price: 20, type: 'consumable' },
   { id: 'speedBoost', name: 'Speed Boost', description: 'Rychlejsi pohyb o 30%', price: 40, type: 'permanent' },
-  { id: 'extraDash', name: 'Extra Dash', description: 'Kratsi cooldown dashe o 50%', price: 60, type: 'permanent' },
+  { id: 'extraDash', name: 'Extra Dash', description: '2 dashe za skok misto 1', price: 60, type: 'permanent' },
   { id: 'magnet', name: 'Magnet', description: 'Pritahuje mince', price: 80, type: 'permanent' }
 ];
 

@@ -1,50 +1,72 @@
 body {
   margin: 0;
-  background: #2f4a53;
+  background: #000;
   font-family: Arial;
   text-align: center;
-  height: 100vh;           /* <- PŘIDÁNO: plná výška */
-  display: flex;           /* <- PŘIDÁNO: flexbox centrování */
-  justify-content: center; /* <- PŘIDÁNO: horizontální centrování */
-  align-items: center;     /* <- PŘIDÁNO: vertikální centrování */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 canvas {
   background: #24395e;
-  border: 4px solid black;
-  display: block;          /* <- PŘIDÁNO: odstraní inline mezery */
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .gameWrapper {
-  width: 1000px;
-  height: 700px;
-  margin: auto;
-  padding: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* centrování díky body flexbox */
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.layoutOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  object-fit: fill;
 }
 
 .ui {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  color: white;
+  top: 1%;
+  left: 1%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#level {
+  color: #f5e6c8;
   font-size: 20px;
-  z-index: 10;             /* <- PŘIDÁNO: nad canvas */
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+  text-align: right;
+  padding: 2px 12px;
 }
 
 #coins {
-  color: gold;
+  color: #f5d060;
+  font-size: 20px;
   font-weight: bold;
-  font-size: 22px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+  padding: 2px 12px;
 }
 
 #activeItems {
   color: #aaffaa;
-  font-size: 14px;
-  margin-top: 4px;
+  font-size: 11px;
+  margin-top: 2px;
+  padding-left: 12px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
 }
 
 #deathScreen {

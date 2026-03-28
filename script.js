@@ -5,8 +5,6 @@ canvas.width = 1400;
 canvas.height = 700;
 
 const deathScreen = document.getElementById("deathScreen");
-const scoreEl = document.getElementById("score") || {innerText: ''};
-const timerEl = document.getElementById("timer") || {innerText: ''};
 const levelEl = document.getElementById("level") || {innerText: ''};
 const coinsEl = document.getElementById("coins") || {innerText: ''};
 const activeItemsEl = document.getElementById("activeItems") || {innerText: ''};
@@ -16,6 +14,8 @@ const dedekImg = new Image();
 dedekImg.src = 'dedek.png';
 const skikesImg = new Image();
 skikesImg.src = 'skikes.png';
+const grassImg = new Image();
+grassImg.src = 'grass.png';
 
 // SAVE/LOAD (localStorage)
 function getSave() {
@@ -34,7 +34,7 @@ const SHOP_ITEMS = [
   { id: 'doubleJump', name: 'Double Jump', description: 'Skok ve vzduchu', price: 50, type: 'permanent' },
   { id: 'shield', name: 'Shield', description: 'Prezije 1 naraz do spiku', price: 20, type: 'consumable' },
   { id: 'speedBoost', name: 'Speed Boost', description: 'Rychlejsi pohyb o 30%', price: 40, type: 'permanent' },
-  { id: 'extraDash', name: 'Extra Dash', description: 'Kratsi cooldown dashe o 50%', price: 60, type: 'permanent' },
+  { id: 'extraDash', name: 'Extra Dash', description: '2 dashe za skok misto 1', price: 60, type: 'permanent' },
   { id: 'magnet', name: 'Magnet', description: 'Pritahuje mince', price: 80, type: 'permanent' }
 ];
 
@@ -49,12 +49,13 @@ const sounds = {
   win: new Audio('win.wav'), 
   jump: new Audio('jump.wav'),
   walk: new Audio('walk.wav'),
-  coin: new Audio('win.wav'),
+  coin: new Audio('coin.wav'),
   dash: new Audio('dash.wav'),
   music1: new Audio('music1.mp3')
 };
 sounds.music1.loop = true;
-sounds.music1.volume = 0.3;
+sounds.music1.volume = 0.7;
+sounds.coin.volume = 0.3;
 
 // PLAYER
 let player = {
@@ -67,7 +68,8 @@ let player = {
   grounded: false,
   facing: 1,
   dashSpeed: 18,
-  dashCooldown: 0,
+  dashesLeft: 1,
+  dashing: 0,
   baseSpeed: 7,
   hasDoubleJump: false,
   hasShield: false,
@@ -83,7 +85,7 @@ const levels = [
   {
     length: 1800,
     platforms: [
-      { x: 0, y: 650, width: 1800, height: 50 },
+      { x: 0, y: 580, width: 1800, height: 200 },
       { x: 400, y: 550, width: 200, height: 20 },
       { x: 700, y: 500, width: 200, height: 20 }
     ],
@@ -91,123 +93,124 @@ const levels = [
     coins: [
       { x: 420, y: 520, width: 20, height: 20 },
       { x: 720, y: 470, width: 20, height: 20 },
-      { x: 900, y: 620, width: 20, height: 20 }
+      { x: 900, y: 580, width: 20, height: 20 }
     ],
-    winZone: { x: 1600, y: 600, width: 100, height: 50 }
+    winZone: { x: 1600, y: 530, width: 100, height: 50 }
   },
   // 🟡 LEVEL 1
   {
     length: 2000,
     platforms: [
-      { x: 0, y: 650, width: 2000, height: 50 },
+      { x: 0, y: 580, width: 2000, height: 200 },
       { x: 500, y: 550, width: 150, height: 20 },
       { x: 800, y: 500, width: 150, height: 20 }
     ],
     spikes: [
-      { x: 900, y: 610, width: 40, height: 40 }
+      { x: 900, y: 540, width: 40, height: 40 }
     ],
     coins: [
       { x: 520, y: 520, width: 20, height: 20 },
       { x: 820, y: 470, width: 20, height: 20 },
-      { x: 950, y: 620, width: 20, height: 20 },
-      { x: 1400, y: 620, width: 20, height: 20 }
+      { x: 950, y: 570, width: 20, height: 20 },
+      { x: 1400, y: 580, width: 20, height: 20 }
     ],
-    winZone: { x: 1800, y: 600, width: 100, height: 50 }
+    winZone: { x: 1800, y: 530, width: 100, height: 50 }
   },
   // 🟠 LEVEL 2 (dash)
   {
     length: 2200,
     platforms: [
-      { x: 0, y: 650, width: 2200, height: 50 },
+      { x: 0, y: 580, width: 2200, height: 200 },
       { x: 600, y: 550, width: 120, height: 20 },
       { x: 1100, y: 550, width: 120, height: 20 }
     ],
     spikes: [
-      { x: 800, y: 610, width: 40, height: 40 }
+      { x: 800, y: 540, width: 40, height: 40 }
     ],
     coins: [
       { x: 620, y: 520, width: 20, height: 20 },
       { x: 1120, y: 520, width: 20, height: 20 },
-      { x: 850, y: 620, width: 20, height: 20 },
-      { x: 1500, y: 620, width: 20, height: 20 }
+      { x: 850, y: 570, width: 20, height: 20 },
+      { x: 1500, y: 580, width: 20, height: 20 }
     ],
-    winZone: { x: 2000, y: 600, width: 100, height: 50 }
+    winZone: { x: 2000, y: 530, width: 100, height: 50 }
   },
   // 🔴 LEVEL 3
   {
     length: 2400,
     platforms: [
-      { x: 0, y: 650, width: 2400, height: 50 },
+      { x: 0, y: 580, width: 2400, height: 200 },
       { x: 400, y: 550, width: 100, height: 20 },
       { x: 650, y: 500, width: 100, height: 20 },
       { x: 900, y: 450, width: 100, height: 20 }
     ],
     spikes: [
-      { x: 1000, y: 610, width: 40, height: 40 }
+      { x: 1000, y: 540, width: 40, height: 40 }
     ],
     coins: [
       { x: 420, y: 520, width: 20, height: 20 },
       { x: 670, y: 470, width: 20, height: 20 },
       { x: 920, y: 420, width: 20, height: 20 },
-      { x: 1050, y: 620, width: 20, height: 20 },
-      { x: 1600, y: 620, width: 20, height: 20 }
+      { x: 1050, y: 570, width: 20, height: 20 },
+      { x: 1600, y: 580, width: 20, height: 20 }
     ],
-    winZone: { x: 2200, y: 600, width: 100, height: 50 }
+    winZone: { x: 2200, y: 530, width: 100, height: 50 }
   },
   // 🔥 LEVEL 4
   {
     length: 2600,
     platforms: [
-      { x: 0, y: 650, width: 2600, height: 50 },
+      { x: 0, y: 580, width: 2600, height: 200 },
       { x: 500, y: 550, width: 80, height: 20 },
       { x: 700, y: 500, width: 80, height: 20 },
       { x: 900, y: 450, width: 80, height: 20 },
       { x: 1100, y: 400, width: 80, height: 20 }
     ],
     spikes: [
-      { x: 1300, y: 610, width: 40, height: 40 },
-      { x: 1500, y: 610, width: 40, height: 40 }
+      { x: 1300, y: 540, width: 40, height: 40 },
+      { x: 1500, y: 540, width: 40, height: 40 }
     ],
     coins: [
       { x: 520, y: 520, width: 20, height: 20 },
       { x: 720, y: 470, width: 20, height: 20 },
       { x: 920, y: 420, width: 20, height: 20 },
       { x: 1120, y: 370, width: 20, height: 20 },
-      { x: 1350, y: 620, width: 20, height: 20 }
+      { x: 1350, y: 570, width: 20, height: 20 }
     ],
-    winZone: { x: 2400, y: 600, width: 100, height: 50 }
+    winZone: { x: 2400, y: 530, width: 100, height: 50 }
   },
   // 💀 LEVEL 5 (hard)
   {
     length: 2800,
     platforms: [
-      { x: 0, y: 650, width: 2800, height: 50 },
+      { x: 0, y: 580, width: 2800, height: 200 },
       { x: 400, y: 550, width: 60, height: 20 },
       { x: 550, y: 500, width: 60, height: 20 },
       { x: 700, y: 450, width: 60, height: 20 }
     ],
     spikes: [
-      { x: 900, y: 610, width: 40, height: 40 },
-      { x: 1100, y: 610, width: 40, height: 40 },
-      { x: 1300, y: 610, width: 40, height: 40 }
+      { x: 900, y: 540, width: 40, height: 40 },
+      { x: 1100, y: 540, width: 40, height: 40 },
+      { x: 1300, y: 540, width: 40, height: 40 }
     ],
     coins: [
       { x: 420, y: 520, width: 20, height: 20 },
       { x: 570, y: 470, width: 20, height: 20 },
       { x: 720, y: 420, width: 20, height: 20 },
-      { x: 950, y: 620, width: 20, height: 20 },
-      { x: 1150, y: 620, width: 20, height: 20 }
+      { x: 950, y: 570, width: 20, height: 20 },
+      { x: 1150, y: 570, width: 20, height: 20 }
     ],
-    winZone: { x: 2600, y: 600, width: 100, height: 50 }
+    winZone: { x: 2600, y: 530, width: 100, height: 50 }
   }
 ];
 
 let platforms, spikes, winZone;
-let score = 0, time = 0, lastTime = 0;
+let lastTime = 0;
 let cameraX = 0;
 let levelCoins = [];
 let tempCoins = 0;
 let savedCoins = getSave().coins;
+let winning = false;
 
 function loadLevel() {
   const lvl = levels[level];
@@ -215,17 +218,19 @@ function loadLevel() {
   spikes = lvl.spikes;
   winZone = lvl.winZone;
   levelCoins = (lvl.coins || []).map(c => ({ ...c, collected: false }));
-  levelEl.innerText = "Level: " + (level + 1);
+  levelEl.innerText = "Lv " + (level + 1);
   player.x = 100; 
   player.y = 500; 
   player.dx = 0; 
   player.dy = 0; 
-  player.dashCooldown = 0;
+  player.dashesLeft = 1;
+  player.dashing = 0;
   walkTimer = 0;
   tempCoins = 0;
+  winning = false;
   const save = getSave();
   savedCoins = save.coins;
-  coinsEl.innerText = `Coins: ${savedCoins}`;
+  coinsEl.innerText = savedCoins;
 
   // Apply owned item effects
   player.hasDoubleJump = save.items.includes('doubleJump');
@@ -261,15 +266,19 @@ function resetGame() {
 
 // UPDATE
 function update(delta) {
-  // Input
-  if (keys["KeyD"]) { 
-    player.dx = player.speed; 
-    player.facing = 1;
-  } else if (keys["KeyA"]) { 
-    player.dx = -player.speed; 
-    player.facing = -1;
-  } else { 
-    player.dx = 0; 
+  // Input (dash overrides normal movement while active)
+  if (player.dashing > 0) {
+    player.dashing -= delta * 60;
+  } else {
+    if (keys["KeyD"]) {
+      player.dx = player.speed;
+      player.facing = 1;
+    } else if (keys["KeyA"]) {
+      player.dx = -player.speed;
+      player.facing = -1;
+    } else {
+      player.dx = 0;
+    }
   }
 
   // Jump + ZVUK + Double Jump
@@ -287,19 +296,30 @@ function update(delta) {
     keys["Space"] = false; // prevent repeated trigger
   }
 
-  // Dash + ZVUK + Extra Dash
-  if (level >= 2 && keys["KeyW"] && player.dashCooldown <= 0) {
+  // Dash — 1x za skok (2x s Extra Dash), reset pri pristani
+  if (level >= 2 && keys["KeyW"] && player.dashesLeft > 0 && player.dashing <= 0) {
     player.dx = player.facing * player.dashSpeed;
-    player.dashCooldown = player.hasExtraDash ? 90 : 180;
+    player.dashing = 10;
+    player.dashesLeft--;
     sounds.dash.currentTime = 0;
     sounds.dash.play().catch(() => {});
   }
-  if (player.dashCooldown > 0) player.dashCooldown -= 1;
 
   // Physics
   player.dy += player.gravity * delta * 60;
   player.x += player.dx * delta * 60;
   player.y += player.dy * delta * 60;
+
+  // Left boundary
+  if (player.x < 0) player.x = 0;
+
+  // Fall death
+  if (player.y > canvas.height + 100) {
+    sounds.hit.currentTime = 0;
+    sounds.hit.play().catch(() => {});
+    deathScreen.classList.add("active");
+    return;
+  }
 
   // Platform collision
   player.grounded = false;
@@ -312,6 +332,7 @@ function update(delta) {
       player.y = p.y - player.height;
       player.dy = 0;
       player.grounded = true;
+      player.dashesLeft = player.hasExtraDash ? 2 : 1;
       break;
     }
   }
@@ -368,7 +389,7 @@ function update(delta) {
         player.y + player.height > c.y) {
       c.collected = true;
       tempCoins++;
-      coinsEl.innerText = `Coins: ${savedCoins + tempCoins}`;
+      coinsEl.innerText = savedCoins + tempCoins;
       sounds.coin.currentTime = 0;
       sounds.coin.play().catch(() => {});
     }
@@ -377,7 +398,7 @@ function update(delta) {
   // WALK ZVUK LOOP
   if (player.grounded && (keys["KeyD"] || keys["KeyA"])) {
     walkTimer += delta * 60;
-    if (walkTimer > 0.4) {
+    if (walkTimer > 20) {
       sounds.walk.currentTime = 0;
       sounds.walk.play().catch(() => {});
       walkTimer = 0;
@@ -393,8 +414,11 @@ function update(delta) {
   if (cameraX < 0) cameraX = 0;
   if (cameraX > lvl.length - canvas.width) cameraX = lvl.length - canvas.width;
 
-  // WIN + ZVUK
-  if (player.x + player.width > winZone.x) {
+  // WIN + ZVUK — pocka na dohrani win zvuku
+  if (!winning && player.x + player.width > winZone.x &&
+      player.y + player.height > winZone.y &&
+      player.y < winZone.y + winZone.height) {
+    winning = true;
     // Save collected coins
     if (tempCoins > 0) {
       const save = getSave();
@@ -402,14 +426,20 @@ function update(delta) {
       setSave(save);
       tempCoins = 0;
     }
+    // Stop player movement
+    player.dx = 0;
+    player.dy = 0;
     sounds.win.currentTime = 0;
     sounds.win.play().catch(() => {});
-    level++;
-    if (level > 5) {
-      location.href = "levels.html";
-    } else {
-      location.href = `game.html?level=${level}`;
-    }
+    sounds.win.addEventListener('ended', function goNext() {
+      sounds.win.removeEventListener('ended', goNext);
+      level++;
+      if (level > 5) {
+        location.href = "levels.html";
+      } else {
+        location.href = `game.html?level=${level}`;
+      }
+    });
   }
 }
 
@@ -420,9 +450,26 @@ function draw() {
   ctx.save();
   ctx.translate(-cameraX, 0);
 
-  // Platformy (zelené)
-  ctx.fillStyle = "green";
-  platforms.forEach(p => ctx.fillRect(p.x, p.y, p.width, p.height));
+  // Platformy
+  platforms.forEach(p => {
+    if (p.height >= 100 && grassImg.complete && grassImg.naturalWidth > 0) {
+      // Ground platform — tile grass, top of grass aligns with collision surface
+      // Draw grass starting 30px above collision so feet are in the grass
+      const grassDrawY = p.y - 30;
+      const grassDrawH = p.height + 30;
+      const tileH = grassDrawH;
+      const tileW = tileH * (grassImg.naturalWidth / grassImg.naturalHeight);
+      for (let tx = 0; tx < p.width; tx += tileW) {
+        const drawW = Math.min(tileW, p.width - tx);
+        const srcW = (drawW / tileW) * grassImg.naturalWidth;
+        ctx.drawImage(grassImg, 0, 0, srcW, grassImg.naturalHeight, p.x + tx, grassDrawY, drawW, grassDrawH);
+      }
+    } else {
+      // Air platforms — green
+      ctx.fillStyle = "green";
+      ctx.fillRect(p.x, p.y, p.width, p.height);
+    }
+  });
 
   // Win zone (žlutá)
   ctx.fillStyle = "yellow";
@@ -454,12 +501,9 @@ function draw() {
   // DEDEK - TEXTURA dedek.png + facing flip
   if (dedekImg.complete) {
     ctx.save();
+    ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
     ctx.scale(player.facing, 1);
-    ctx.drawImage(dedekImg,
-      player.facing > 0 ? player.x : player.x + player.width,
-      player.y,
-      player.width, player.height
-    );
+    ctx.drawImage(dedekImg, -player.width / 2, -player.height / 2, player.width, player.height);
     ctx.restore();
   } else {
     ctx.fillStyle = "blue";  // Fallback
@@ -473,12 +517,8 @@ function draw() {
 function loop(timestamp) {
   const delta = (timestamp - lastTime) / 1000 || 0.016;
   lastTime = timestamp;
-  time += delta;
-  
-  scoreEl.innerText = `Score: ${Math.floor(time * 10 + level * 100)}`;
-  timerEl.innerText = `Time: ${time.toFixed(2)}`;
 
-  if (!deathScreen.classList.contains("active"))
+  if (!deathScreen.classList.contains("active") && !winning)
     update(delta);
 
   draw();
