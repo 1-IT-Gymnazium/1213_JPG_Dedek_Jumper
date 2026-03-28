@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Dědek Jumper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="gameWrapper">
+        <canvas id="game"></canvas>
+        
+        <!-- TYTO 3 ŘÁDKY CHYBĚLY - PŘIDEJ JE! -->
+        <div class="ui">
+            <div id="score">Score: 0</div>
+            <div id="timer">Time: 0.00</div>
+            <div id="level">Level: 1</div>
+            <div id="coins">Coins: 0</div>
+            <div id="activeItems"></div>
+        </div>
+        
+        <div id="deathScreen">
+            <div class="deathBox">
+                <h2>💀 niha 💀</h2>
+                <button onclick="resetGame()">Restart</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

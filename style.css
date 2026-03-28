@@ -1,18 +1,197 @@
 body {
-    margin: 0;
-    background: #87CEEB;
-    text-align: center;
-    font-family: Arial, sans-serif;
-  }
-  
-  h1 {
-    margin: 10px;
-  }
-  
-  canvas {
-    background: #5c94fc;
-    display: block;
-    margin: 0 auto;
-    border: 3px solid black;
-  }
-  
+  margin: 0;
+  background: #2f4a53;
+  font-family: Arial;
+  text-align: center;
+  height: 100vh;           /* <- PŘIDÁNO: plná výška */
+  display: flex;           /* <- PŘIDÁNO: flexbox centrování */
+  justify-content: center; /* <- PŘIDÁNO: horizontální centrování */
+  align-items: center;     /* <- PŘIDÁNO: vertikální centrování */
+}
+
+canvas {
+  background: #24395e;
+  border: 4px solid black;
+  display: block;          /* <- PŘIDÁNO: odstraní inline mezery */
+}
+
+.gameWrapper {
+  width: 1000px;
+  height: 700px;
+  margin: auto;
+  padding: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* centrování díky body flexbox */
+}
+
+.ui {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+  font-size: 20px;
+  z-index: 10;             /* <- PŘIDÁNO: nad canvas */
+}
+
+#coins {
+  color: gold;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+#activeItems {
+  color: #aaffaa;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+#deathScreen {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 1, 1, 0.4);  /* <- ZMĚNENO: tmavší */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;            /* <- PŘIDÁNO: nejvýše */
+}
+
+#deathScreen.active {
+  display: flex;
+}
+
+.deathBox {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* <- PŘIDÁNO: stín */
+}
+
+#startScreen {
+  position: fixed;
+  inset: 0;
+  background: url("menu.png") center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;            /* <- PŘIDÁNO: nad vším */
+}
+
+#startScreen h1 {
+  font-size: 70px;
+  color: white;
+  text-shadow: 4px 4px 10px black;
+  margin-bottom: 50px;
+}
+
+.menuButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menuButtons button {
+  font-size: 30px;
+  padding: 20px 60px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: rgba(255,255,255,0.9); /* <- PŘIDÁNO: lepší viditelnost */
+  transition: all 0.3s;    /* <- PŘIDÁNO: plynulý efekt */
+}
+
+.menuButtons button:hover {
+  background: white;
+  transform: scale(1.05);  /* <- PŘIDÁNO: hover efekt */
+}
+
+/* SHOP */
+#coinBalance {
+  color: gold;
+  font-size: 28px;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px black;
+  margin-bottom: 20px;
+}
+
+.shopGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  max-width: 700px;
+}
+
+.shopItem {
+  background: rgba(255,255,255,0.9);
+  border-radius: 12px;
+  padding: 15px;
+  width: 180px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.shopItem:hover {
+  transform: scale(1.05);
+  background: white;
+}
+
+.shopItem h3 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+}
+
+.shopItem .desc {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.shopItem .price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #b8860b;
+}
+
+.shopItem .buyBtn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #4CAF50;
+  color: white;
+  transition: background 0.2s;
+}
+
+.shopItem .buyBtn:hover {
+  background: #45a049;
+}
+
+.shopItem .buyBtn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.shopItem.owned {
+  opacity: 0.7;
+}
+
+.shopItem .ownedBadge {
+  color: #4CAF50;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.shopMsg {
+  color: #ff4444;
+  font-size: 14px;
+  margin-top: 5px;
+  min-height: 20px;
+}
