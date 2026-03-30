@@ -25,12 +25,28 @@ Challenge Mode
 Shop
 </button>
 
+<button id="editorBtn" style="display:none" onclick="location.href='editor.html'">
+Level Editor
+</button>
+
 </div>
 </div>
 
-
-
-<script src="script.js"></script>
+<script>
+// Show editor button if editor role
+if (localStorage.getItem('oldFartJumper_editor') === 'true') {
+  document.getElementById('editorBtn').style.display = '';
+}
+// Ctrl+Shift+E to toggle editor mode
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+    const isEditor = localStorage.getItem('oldFartJumper_editor') === 'true';
+    localStorage.setItem('oldFartJumper_editor', isEditor ? 'false' : 'true');
+    document.getElementById('editorBtn').style.display = isEditor ? 'none' : '';
+    e.preventDefault();
+  }
+});
+</script>
 
 </body>
 </html>

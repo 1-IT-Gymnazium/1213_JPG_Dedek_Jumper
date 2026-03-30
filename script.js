@@ -8,6 +8,7 @@ const deathScreen = document.getElementById("deathScreen");
 const levelEl = document.getElementById("level") || {innerText: ''};
 const coinsEl = document.getElementById("coins") || {innerText: ''};
 const activeItemsEl = document.getElementById("activeItems") || {innerText: ''};
+const layoutOverlay = document.querySelector(".layoutOverlay");
 
 // TEXTURY - PŘIDÁNO
 const dedekImg = new Image();
@@ -16,6 +17,8 @@ const skikesImg = new Image();
 skikesImg.src = 'skikes.png';
 const grassImg = new Image();
 grassImg.src = 'grass.png';
+const dirtImg = new Image();
+dirtImg.src = 'dirt.png';
 
 // SAVE/LOAD (localStorage)
 function getSave() {
@@ -41,6 +44,7 @@ const SHOP_ITEMS = [
 // LEVEL Z URL
 const params = new URLSearchParams(window.location.search);
 let level = parseInt(params.get("level")) || 0;
+const isTryMode = params.get("mode") === 'try';
 let walkTimer = 0;
 
 // ZVUKY
@@ -93,9 +97,9 @@ const levels = [
     coins: [
       { x: 420, y: 520, width: 20, height: 20 },
       { x: 720, y: 470, width: 20, height: 20 },
-      { x: 900, y: 580, width: 20, height: 20 }
+      { x: 900, y: 605, width: 20, height: 20 }
     ],
-    winZone: { x: 1600, y: 530, width: 100, height: 50 }
+    winZone: { x: 1600, y: 575, width: 100, height: 50 }
   },
   // 🟡 LEVEL 1
   {
@@ -106,15 +110,15 @@ const levels = [
       { x: 800, y: 500, width: 150, height: 20 }
     ],
     spikes: [
-      { x: 900, y: 540, width: 40, height: 40 }
+      { x: 900, y: 585, width: 40, height: 40 }
     ],
     coins: [
       { x: 520, y: 520, width: 20, height: 20 },
       { x: 820, y: 470, width: 20, height: 20 },
-      { x: 950, y: 570, width: 20, height: 20 },
-      { x: 1400, y: 580, width: 20, height: 20 }
+      { x: 950, y: 605, width: 20, height: 20 },
+      { x: 1400, y: 605, width: 20, height: 20 }
     ],
-    winZone: { x: 1800, y: 530, width: 100, height: 50 }
+    winZone: { x: 1800, y: 575, width: 100, height: 50 }
   },
   // 🟠 LEVEL 2 (dash)
   {
@@ -125,15 +129,15 @@ const levels = [
       { x: 1100, y: 550, width: 120, height: 20 }
     ],
     spikes: [
-      { x: 800, y: 540, width: 40, height: 40 }
+      { x: 800, y: 585, width: 40, height: 40 }
     ],
     coins: [
       { x: 620, y: 520, width: 20, height: 20 },
       { x: 1120, y: 520, width: 20, height: 20 },
-      { x: 850, y: 570, width: 20, height: 20 },
-      { x: 1500, y: 580, width: 20, height: 20 }
+      { x: 850, y: 605, width: 20, height: 20 },
+      { x: 1500, y: 605, width: 20, height: 20 }
     ],
-    winZone: { x: 2000, y: 530, width: 100, height: 50 }
+    winZone: { x: 2000, y: 575, width: 100, height: 50 }
   },
   // 🔴 LEVEL 3
   {
@@ -145,16 +149,16 @@ const levels = [
       { x: 900, y: 450, width: 100, height: 20 }
     ],
     spikes: [
-      { x: 1000, y: 540, width: 40, height: 40 }
+      { x: 1000, y: 585, width: 40, height: 40 }
     ],
     coins: [
       { x: 420, y: 520, width: 20, height: 20 },
       { x: 670, y: 470, width: 20, height: 20 },
       { x: 920, y: 420, width: 20, height: 20 },
-      { x: 1050, y: 570, width: 20, height: 20 },
-      { x: 1600, y: 580, width: 20, height: 20 }
+      { x: 1050, y: 605, width: 20, height: 20 },
+      { x: 1600, y: 605, width: 20, height: 20 }
     ],
-    winZone: { x: 2200, y: 530, width: 100, height: 50 }
+    winZone: { x: 2200, y: 575, width: 100, height: 50 }
   },
   // 🔥 LEVEL 4
   {
@@ -167,17 +171,17 @@ const levels = [
       { x: 1100, y: 400, width: 80, height: 20 }
     ],
     spikes: [
-      { x: 1300, y: 540, width: 40, height: 40 },
-      { x: 1500, y: 540, width: 40, height: 40 }
+      { x: 1300, y: 585, width: 40, height: 40 },
+      { x: 1500, y: 585, width: 40, height: 40 }
     ],
     coins: [
       { x: 520, y: 520, width: 20, height: 20 },
       { x: 720, y: 470, width: 20, height: 20 },
       { x: 920, y: 420, width: 20, height: 20 },
       { x: 1120, y: 370, width: 20, height: 20 },
-      { x: 1350, y: 570, width: 20, height: 20 }
+      { x: 1350, y: 605, width: 20, height: 20 }
     ],
-    winZone: { x: 2400, y: 530, width: 100, height: 50 }
+    winZone: { x: 2400, y: 575, width: 100, height: 50 }
   },
   // 💀 LEVEL 5 (hard)
   {
@@ -189,18 +193,18 @@ const levels = [
       { x: 700, y: 450, width: 60, height: 20 }
     ],
     spikes: [
-      { x: 900, y: 540, width: 40, height: 40 },
-      { x: 1100, y: 540, width: 40, height: 40 },
-      { x: 1300, y: 540, width: 40, height: 40 }
+      { x: 900, y: 585, width: 40, height: 40 },
+      { x: 1100, y: 585, width: 40, height: 40 },
+      { x: 1300, y: 585, width: 40, height: 40 }
     ],
     coins: [
       { x: 420, y: 520, width: 20, height: 20 },
       { x: 570, y: 470, width: 20, height: 20 },
       { x: 720, y: 420, width: 20, height: 20 },
-      { x: 950, y: 570, width: 20, height: 20 },
-      { x: 1150, y: 570, width: 20, height: 20 }
+      { x: 950, y: 605, width: 20, height: 20 },
+      { x: 1150, y: 605, width: 20, height: 20 }
     ],
-    winZone: { x: 2600, y: 530, width: 100, height: 50 }
+    winZone: { x: 2600, y: 575, width: 100, height: 50 }
   }
 ];
 
@@ -213,14 +217,22 @@ let savedCoins = getSave().coins;
 let winning = false;
 
 function loadLevel() {
-  const lvl = levels[level];
+  let lvl;
+  if (isTryMode) {
+    try {
+      lvl = JSON.parse(localStorage.getItem('oldFartJumper_tryLevel'));
+    } catch(e) {}
+    if (!lvl) { location.href = 'editor.html'; return; }
+  } else {
+    lvl = levels[level];
+  }
   platforms = lvl.platforms;
   spikes = lvl.spikes;
   winZone = lvl.winZone;
   levelCoins = (lvl.coins || []).map(c => ({ ...c, collected: false }));
-  levelEl.innerText = "Lv " + (level + 1);
-  player.x = 100; 
-  player.y = 500; 
+  levelEl.innerText = isTryMode ? "Try" : "Lv " + (level + 1);
+  player.x = lvl.spawn ? lvl.spawn.x : 100;
+  player.y = lvl.spawn ? lvl.spawn.y : 400; 
   player.dx = 0; 
   player.dy = 0; 
   player.dashesLeft = 1;
@@ -324,12 +336,13 @@ function update(delta) {
   // Platform collision
   player.grounded = false;
   for (let p of platforms) {
+    const collisionY = p.height >= 100 ? p.y + 45 : p.y;
     if (player.x + 5 < p.x + p.width - 5 &&
         player.x + player.width - 5 > p.x + 5 &&
-        player.y + player.height > p.y - 10 &&
-        player.y + player.height <= p.y + 5 &&
+        player.y + player.height >= collisionY &&
+        player.y + player.height <= collisionY + p.height &&
         player.dy >= 0) {
-      player.y = p.y - player.height;
+      player.y = collisionY - player.height;
       player.dy = 0;
       player.grounded = true;
       player.dashesLeft = player.hasExtraDash ? 2 : 1;
@@ -414,6 +427,17 @@ function update(delta) {
   if (cameraX < 0) cameraX = 0;
   if (cameraX > lvl.length - canvas.width) cameraX = lvl.length - canvas.width;
 
+  // LAYOUT OVERLAY - fade when player near edges
+  if (layoutOverlay) {
+    const screenX = player.x - cameraX;
+    const edgeZone = 200;
+    const nearLeft = screenX < edgeZone ? 1 - screenX / edgeZone : 0;
+    const nearRight = screenX + player.width > canvas.width - edgeZone
+      ? 1 - (canvas.width - screenX - player.width) / edgeZone : 0;
+    const fade = Math.max(nearLeft, nearRight);
+    layoutOverlay.style.opacity = fade > 0 ? Math.max(0.3, 1 - fade) : 1;
+  }
+
   // WIN + ZVUK — pocka na dohrani win zvuku
   if (!winning && player.x + player.width > winZone.x &&
       player.y + player.height > winZone.y &&
@@ -433,6 +457,10 @@ function update(delta) {
     sounds.win.play().catch(() => {});
     sounds.win.addEventListener('ended', function goNext() {
       sounds.win.removeEventListener('ended', goNext);
+      if (isTryMode) {
+        location.href = 'editor.html';
+        return;
+      }
       level++;
       if (level > 5) {
         location.href = "levels.html";
@@ -453,16 +481,32 @@ function draw() {
   // Platformy
   platforms.forEach(p => {
     if (p.height >= 100 && grassImg.complete && grassImg.naturalWidth > 0) {
-      // Ground platform — tile grass, top of grass aligns with collision surface
-      // Draw grass starting 30px above collision so feet are in the grass
-      const grassDrawY = p.y - 30;
-      const grassDrawH = p.height + 30;
-      const tileH = grassDrawH;
-      const tileW = tileH * (grassImg.naturalWidth / grassImg.naturalHeight);
+      // Shared tile width based on grass height
+      const grassDrawY = p.y + 30;
+      const grassH = 120;
+      const tileW = grassH * (grassImg.naturalWidth / grassImg.naturalHeight);
+
+      // 1) Fill dirt overlapping under grass so no gap shows
+      if (dirtImg.complete && dirtImg.naturalWidth > 0) {
+        const dirtStartY = grassDrawY + grassH * 0.55;
+        const dirtFillH = canvas.height - dirtStartY;
+        const dirtTileH = grassH * 1.5;
+        for (let ty = 0; ty < dirtFillH; ty += dirtTileH) {
+          const drawH = Math.min(dirtTileH, dirtFillH - ty);
+          const srcH = (drawH / dirtTileH) * dirtImg.naturalHeight;
+          for (let tx = 0; tx < p.width; tx += tileW) {
+            const drawW = Math.min(tileW, p.width - tx);
+            const srcW2 = (drawW / tileW) * dirtImg.naturalWidth;
+            ctx.drawImage(dirtImg, 0, 0, srcW2, srcH, p.x + tx, dirtStartY + ty, drawW, drawH);
+          }
+        }
+      }
+
+      // 2) Draw grass on top
       for (let tx = 0; tx < p.width; tx += tileW) {
         const drawW = Math.min(tileW, p.width - tx);
         const srcW = (drawW / tileW) * grassImg.naturalWidth;
-        ctx.drawImage(grassImg, 0, 0, srcW, grassImg.naturalHeight, p.x + tx, grassDrawY, drawW, grassDrawH);
+        ctx.drawImage(grassImg, 0, 0, srcW, grassImg.naturalHeight, p.x + tx, grassDrawY, drawW, grassH);
       }
     } else {
       // Air platforms — green

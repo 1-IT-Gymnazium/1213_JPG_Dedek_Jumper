@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Dědek Jumper - Level Editor</title>
+<link rel="stylesheet" href="editor.css">
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="group">
+    <label>Tools:</label>
+    <button id="toolPlatform" onclick="setTool('platform')">Platform</button>
+    <button id="toolSpike" onclick="setTool('spike')">Spike</button>
+    <button id="toolCoin" onclick="setTool('coin')">Coin</button>
+    <button id="toolWinZone" onclick="setTool('winZone')">Win Zone</button>
+    <button id="toolSpawn" onclick="setTool('spawn')">Spawn</button>
+    <button id="toolSelect" onclick="setTool('select')">Select</button>
+  </div>
+
+  <div class="group">
+    <label>Level Length:</label>
+    <input type="number" id="levelLength" value="2000" min="1400" step="100">
+  </div>
+
+  <div class="group">
+    <label>File:</label>
+    <button onclick="saveLevel()">Save</button>
+    <button onclick="showLoadModal()">Load</button>
+    <button onclick="exportJSON()">Export</button>
+    <button onclick="document.getElementById('importInput').click()">Import</button>
+    <input type="file" id="importInput" accept=".json" style="display:none" onchange="importJSON(event)">
+    <button onclick="clearCanvas()">Clear</button>
+    <button onclick="tryLevel()" style="background:#4CAF50;color:#fff;border-color:#4CAF50;">Try</button>
+  </div>
+
+  <div class="group">
+    <button onclick="location.href='index.html'">Back to Menu</button>
+  </div>
+</div>
+
+<div class="canvas-wrapper">
+  <canvas id="editorCanvas"></canvas>
+</div>
+
+<div class="status-bar">
+  <div>Tool: <span id="statusTool">select</span></div>
+  <div>Objects: <span id="statusObjects">0</span></div>
+  <div>Mouse: <span id="statusMouse">0, 0</span></div>
+  <div>Camera: <span id="statusCamera">0</span></div>
+</div>
+
+<div class="modal-overlay" id="loadModal">
+  <div class="modal">
+    <h3>Load Level</h3>
+    <div id="loadList"></div>
+    <button onclick="closeLoadModal()">Cancel</button>
+  </div>
+</div>
+
+<div class="warning" id="warning"></div>
+
+<script src="editor.js"></script>
+</body>
+</html>
