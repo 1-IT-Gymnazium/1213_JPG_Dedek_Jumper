@@ -113,13 +113,16 @@ bgSources.forEach(src => {
   bgImages.push(img);
 });
 
-// SAVE/LOAD (bez persistentního ukládání — vždy začíná od nuly)
-let _memSave = { coins: 0, items: [] };
+// SAVE/LOAD (sessionStorage — ukládá se mezi levely, resetuje po zavření prohlížeče)
 function getSave() {
-  return _memSave;
+  try {
+    return JSON.parse(sessionStorage.getItem('oldFartJumper_save')) || { coins: 0, items: [] };
+  } catch(e) {
+    return { coins: 0, items: [] };
+  }
 }
 function setSave(data) {
-  _memSave = data;
+  sessionStorage.setItem('oldFartJumper_save', JSON.stringify(data));
 }
 
 // SHOP ITEMS CATALOG

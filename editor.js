@@ -1,5 +1,5 @@
 // === EDITOR ROLE CHECK ===
-if (localStorage.getItem('oldFartJumper_editor') !== 'true') {
+if (sessionStorage.getItem('oldFartJumper_editor') !== 'true') {
   location.href = 'index.html';
 }
 

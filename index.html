@@ -38,34 +38,34 @@ Tester Mode (Shop)
 
 <script>
 // Show editor button if editor role
-if (localStorage.getItem('oldFartJumper_editor') === 'true') {
+if (sessionStorage.getItem('oldFartJumper_editor') === 'true') {
   document.getElementById('editorBtn').style.display = '';
 }
 // Show tester button if tester mode
-if (localStorage.getItem('oldFartJumper_tester') === 'true') {
+if (sessionStorage.getItem('oldFartJumper_tester') === 'true') {
   document.getElementById('testerBtn').style.display = '';
 }
 // Ctrl+Shift+E to toggle editor mode
 // Ctrl+Shift+T to toggle tester mode (infinite coins)
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
-    const isEditor = localStorage.getItem('oldFartJumper_editor') === 'true';
-    localStorage.setItem('oldFartJumper_editor', isEditor ? 'false' : 'true');
+    const isEditor = sessionStorage.getItem('oldFartJumper_editor') === 'true';
+    sessionStorage.setItem('oldFartJumper_editor', isEditor ? 'false' : 'true');
     document.getElementById('editorBtn').style.display = isEditor ? 'none' : '';
     e.preventDefault();
   }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
     e.preventDefault();
     if (confirm('Reset all coins and items?')) {
-      localStorage.setItem('oldFartJumper_save', JSON.stringify({ coins: 0, items: [] }));
-      localStorage.removeItem('oldFartJumper_testerSave');
+      sessionStorage.setItem('oldFartJumper_save', JSON.stringify({ coins: 0, items: [] }));
+      sessionStorage.removeItem('oldFartJumper_testerSave');
       location.reload();
     }
     return;
   }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
-    const isTester = localStorage.getItem('oldFartJumper_tester') === 'true';
-    localStorage.setItem('oldFartJumper_tester', isTester ? 'false' : 'true');
+    const isTester = sessionStorage.getItem('oldFartJumper_tester') === 'true';
+    sessionStorage.setItem('oldFartJumper_tester', isTester ? 'false' : 'true');
     document.getElementById('testerBtn').style.display = isTester ? 'none' : '';
     e.preventDefault();
   }
