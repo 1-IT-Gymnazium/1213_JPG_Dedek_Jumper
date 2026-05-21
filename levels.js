@@ -1,7 +1,7 @@
 const BUILT_IN_LEVELS = [
   // TUTORIAL
   {
-    bg: 0,
+    bg: 1,
     length: 1800,
     platforms: [
       { x: 0, y: 580, width: 1800, height: 200 },
@@ -18,7 +18,7 @@ const BUILT_IN_LEVELS = [
   },
   // LEVEL 1
   {
-    bg: 0,
+    bg: 1,
     length: 2000,
     platforms: [
       { x: 0, y: 580, width: 2000, height: 200 },
@@ -38,7 +38,7 @@ const BUILT_IN_LEVELS = [
   },
   // LEVEL 2
   {
-    bg: 0,
+    bg: 1,
     length: 2200,
     platforms: [
       { x: 0, y: 580, width: 2200, height: 200 },
@@ -58,7 +58,7 @@ const BUILT_IN_LEVELS = [
   },
   // LEVEL 3
   {
-    bg: 0,
+    bg: 1,
     length: 2400,
     platforms: [
       { x: 0, y: 580, width: 2400, height: 200 },
@@ -80,7 +80,7 @@ const BUILT_IN_LEVELS = [
   },
   // LEVEL 4
   {
-    bg: 0,
+    bg: 1,
     length: 2600,
     platforms: [
       { x: 0, y: 580, width: 2600, height: 200 },
@@ -104,7 +104,7 @@ const BUILT_IN_LEVELS = [
   },
   // LEVEL 5
   {
-    bg: 0,
+    bg: 1,
     length: 2800,
     platforms: [
       { x: 0, y: 580, width: 2800, height: 200 },
