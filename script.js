@@ -573,17 +573,19 @@ function update(delta) {
     player.dy = 0;
     sounds.win.currentTime = 0;
     sounds.win.play().catch(() => {});
-    // Rovnou přejít na další level
-    if (isTryMode) {
-      location.href = 'editor.html';
-    } else {
-      level++;
-      if (level >= levels.length) {
-        location.href = "levels.html";
+    sounds.win.addEventListener('ended', function goNext() {
+      sounds.win.removeEventListener('ended', goNext);
+      if (isTryMode) {
+        location.href = 'editor.html';
       } else {
-        location.href = `game.html?level=${level}`;
+        level++;
+        if (level >= levels.length) {
+          location.href = "levels.html";
+        } else {
+          location.href = `game.html?level=${level}`;
+        }
       }
-    }
+    });
   }
 }
 
@@ -728,7 +730,8 @@ function draw() {
     const renderH = player.height * heightMult;
     const renderW = renderH * aspectRatio;
     ctx.save();
-    ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+    // Zarovnání: nohy dědka sedí na spodní hraně kolizního boxu
+    ctx.translate(player.x + player.width / 2, player.y + player.height);
     ctx.scale(player.facing, 1);
     // Kompenzace offsetu pro jump framy (postava neni vycentrovana v kazdem framu)
     let offX = 0, offY = 0;
@@ -736,7 +739,9 @@ function draw() {
       const off = jumpOffsets[animFrame % jumpFrames.length];
       if (off) { offX = -off.ox * renderW; offY = -off.oy * renderH; }
     }
-    ctx.drawImage(currentDedekImg, -renderW / 2 + offX, -renderH / 2 + offY, renderW, renderH);
+    // Posun dolů — obrázky mají průhledný okraj nahoře, posuneme aby nohy seděly na zemi
+    const footOffset = renderH * 0.27;
+    ctx.drawImage(currentDedekImg, -renderW / 2 + offX, -renderH + footOffset + offY, renderW, renderH);
     ctx.restore();
   } else if (!winning) {
     ctx.fillStyle = "blue";
