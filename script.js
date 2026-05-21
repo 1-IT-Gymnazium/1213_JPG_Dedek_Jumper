@@ -573,19 +573,17 @@ function update(delta) {
     player.dy = 0;
     sounds.win.currentTime = 0;
     sounds.win.play().catch(() => {});
-    sounds.win.addEventListener('ended', function goNext() {
-      sounds.win.removeEventListener('ended', goNext);
-      if (isTryMode) {
-        location.href = 'editor.html';
-        return;
-      }
+    // Rovnou přejít na další level
+    if (isTryMode) {
+      location.href = 'editor.html';
+    } else {
       level++;
       if (level >= levels.length) {
         location.href = "levels.html";
       } else {
         location.href = `game.html?level=${level}`;
       }
-    });
+    }
   }
 }
 
@@ -672,19 +670,14 @@ function draw() {
     }
   });
 
-  // Win zone (hospůdka) — statická nebo animovaná po vstupu
-  const activeTavernImg = winning ? tavernOpenFrames[winAnimFrame] : tavernImg;
-  if (activeTavernImg && activeTavernImg.complete && activeTavernImg.naturalWidth > 0) {
-    const aspect = activeTavernImg.naturalWidth / activeTavernImg.naturalHeight;
+  // Win zone (hospůdka) — vždy statický obrázek
+  if (tavernImg && tavernImg.complete && tavernImg.naturalWidth > 0) {
+    const aspect = tavernImg.naturalWidth / tavernImg.naturalHeight;
     const drawH = 420;
     const drawW = drawH * aspect;
     const groundY = 725;
-    // Referenční rozměry statické hospody pro centrování animace
-    const refAspect = tavernImg.naturalWidth / tavernImg.naturalHeight;
-    const refW = drawH * refAspect;
     const refX = winZone.x - 60;
-    const centeredX = refX + (refW - drawW) / 2;
-    ctx.drawImage(activeTavernImg, centeredX, groundY - drawH, drawW, drawH);
+    ctx.drawImage(tavernImg, refX, groundY - drawH, drawW, drawH);
   } else {
     ctx.fillStyle = "yellow";
     ctx.fillRect(winZone.x, winZone.y, winZone.width, winZone.height);
@@ -829,12 +822,6 @@ function loop(timestamp) {
 
   if (!deathScreen.classList.contains("active") && !winning)
     update(delta);
-
-  // Win animace hospůdky — 3 snímky po 0.25s
-  if (winning) {
-    winAnimTime += delta;
-    winAnimFrame = Math.min(Math.floor(winAnimTime / 1.0), tavernOpenFrames.length - 1);
-  }
 
   draw();
   requestAnimationFrame(loop);
