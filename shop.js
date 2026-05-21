@@ -7,16 +7,13 @@ const SHOP_ITEMS = [
   { id: 'magnet', name: 'Magnet', description: 'Pritahuje mince', price: 80, type: 'permanent' }
 ];
 
-// SAVE/LOAD
+// SAVE/LOAD (bez persistentního ukládání — vždy začíná od nuly)
+let _memSave = { coins: 0, items: [] };
 function getSave() {
-  try {
-    return JSON.parse(localStorage.getItem('oldFartJumper_save')) || { coins: 0, items: [] };
-  } catch(e) {
-    return { coins: 0, items: [] };
-  }
+  return _memSave;
 }
 function setSave(data) {
-  localStorage.setItem('oldFartJumper_save', JSON.stringify(data));
+  _memSave = data;
 }
 
 const shopGrid = document.getElementById('shopGrid');
