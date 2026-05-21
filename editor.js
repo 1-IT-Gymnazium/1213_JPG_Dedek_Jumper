@@ -12,17 +12,17 @@ canvas.width = 1400;
 canvas.height = 700;
 
 // === TEXTURES ===
-const grassImg = new Image(); grassImg.src = 'grass.png';
-const dirtImg = new Image(); dirtImg.src = 'dirt.png';
-const skikesImg = new Image(); skikesImg.src = 'skikes.png';
-const stonePlatformImg = new Image(); stonePlatformImg.src = 'stonePlatform.png';
+const grassImg = new Image(); grassImg.src = 'assets/tiles/grass.png';
+const dirtImg = new Image(); dirtImg.src = 'assets/tiles/dirt.png';
+const skikesImg = new Image(); skikesImg.src = 'assets/ui/skikes.png';
+const stonePlatformImg = new Image(); stonePlatformImg.src = 'assets/tiles/stonePlatform.png';
 
 // === BACKGROUNDS ===
 const bgSelect = document.getElementById('bgSelect');
 const editorBgImages = [];
 const editorBgNames = [
-  { src: 'bg1.png', label: 'bg1.png' },
-  { src: 'backGround1.png', label: 'backGround1.png (loop)' }
+  { src: 'assets/backgrounds/bg1.png', label: 'bg1.png' },
+  { src: 'assets/backgrounds/backGround1.png', label: 'backGround1.png (loop)' }
 ];
 editorBgNames.forEach((bg, i) => {
   const img = new Image();

@@ -10,26 +10,26 @@ const coinsEl = document.getElementById("coins") || {innerText: ''};
 const activeItemsEl = document.getElementById("activeItems") || {innerText: ''};
 const timerEl = document.getElementById("timer") || {innerText: ''};
 const layoutImg = new Image();
-layoutImg.src = 'layout.png';
+layoutImg.src = 'assets/ui/layout.png';
 let layoutOpacity = 1;
 let gameTime = 0;
 
 // TEXTURY - PŘIDÁNO
 const dedekImg = new Image();
-dedekImg.src = 'dedek.png';
+dedekImg.src = 'assets/player/Dedek.png';
 
 // ANIMACE - idle frames
 const idleFrames = [];
 for (let i = 1; i <= 7; i++) {
   const img = new Image();
-  img.src = `idle${i}.png`;
+  img.src = `assets/player/idle${i}.png`;
   idleFrames.push(img);
 }
 // ANIMACE - walk frames
 const walkFrames = [];
 for (let i = 1; i <= 4; i++) {
   const img = new Image();
-  img.src = `walk${i}.png`;
+  img.src = `assets/player/walk${i}.png`;
   walkFrames.push(img);
 }
 // ANIMACE - jump frames (s automatickým centrováním)
@@ -64,7 +64,7 @@ function calcContentCenter(img, index, offsetArray) {
 for (let i = 1; i <= 7; i++) {
   const img = new Image();
   const idx = i - 1;
-  img.src = `jump${i}.png`;
+  img.src = `assets/player/jump${i}.png`;
   img.onload = () => calcContentCenter(img, idx, jumpOffsets);
   jumpFrames.push(img);
 }
@@ -72,7 +72,7 @@ for (let i = 1; i <= 7; i++) {
 const dashFrames = [];
 for (let i = 1; i <= 4; i++) {
   const img = new Image();
-  img.src = `dash${i}.png`;
+  img.src = `assets/player/dash${i}.png`;
   dashFrames.push(img);
 }
 let animState = 'idle';
@@ -84,29 +84,29 @@ const WALK_FPS = 18;
 const DASH_FPS = 14;
 const JUMP_FPS = 10;
 const skikesImg = new Image();
-skikesImg.src = 'skikes.png';
+skikesImg.src = 'assets/ui/skikes.png';
 const grassImg = new Image();
-grassImg.src = 'grass.png';
+grassImg.src = 'assets/tiles/grass.png';
 const dirtImg = new Image();
-dirtImg.src = 'dirt.png';
+dirtImg.src = 'assets/tiles/dirt.png';
 const stonePlatformImg = new Image();
-stonePlatformImg.src = 'stonePlatform.png';
+stonePlatformImg.src = 'assets/tiles/stonePlatform.png';
 const tavernImg = new Image();
-tavernImg.src = 'tavern.png';
-const tavernOpenFrames = ['tavern_open1.png', 'tavern_open2.png', 'tavern_open3.png'].map(src => {
+tavernImg.src = 'assets/tavern/tavern.png';
+const tavernOpenFrames = ['assets/tavern/tavern_open1.png', 'assets/tavern/tavern_open2.png', 'assets/tavern/tavern_open3.png'].map(src => {
   const img = new Image(); img.src = src; return img;
 });
 
 // ITEM ICONS
-const iconShield = new Image(); iconShield.src = 'icon_shield.png';
-const iconDash = new Image(); iconDash.src = 'icon_dash.png';
-const iconDoubleJump = new Image(); iconDoubleJump.src = 'icon_doublejump.png';
-const iconSpeed = new Image(); iconSpeed.src = 'icon_speed.png';
-const iconMagnet = new Image(); iconMagnet.src = 'icon_magnet.png';
+const iconShield = new Image(); iconShield.src = 'assets/icons/icon_shield.png';
+const iconDash = new Image(); iconDash.src = 'assets/icons/icon_dash.png';
+const iconDoubleJump = new Image(); iconDoubleJump.src = 'assets/icons/icon_doublejump.png';
+const iconSpeed = new Image(); iconSpeed.src = 'assets/icons/icon_speed.png';
+const iconMagnet = new Image(); iconMagnet.src = 'assets/icons/icon_magnet.png';
 
 // BACKGROUNDS
 const bgImages = [];
-const bgSources = ['bg1.png', 'backGround1.png'];
+const bgSources = ['assets/backgrounds/bg1.png', 'assets/backgrounds/backGround1.png'];
 bgSources.forEach(src => {
   const img = new Image();
   img.src = src;

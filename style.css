@@ -112,7 +112,7 @@ canvas {
 #startScreen {
   position: fixed;
   inset: 0;
-  background: url("menu.png") center/cover no-repeat;
+  background: url("assets/ui/Menu.png") center/cover no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: center;
