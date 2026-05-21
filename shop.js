@@ -3,7 +3,7 @@ const SHOP_ITEMS = [
   { id: 'doubleJump', name: 'Double Jump', description: 'Skok ve vzduchu', price: 50, type: 'permanent' },
   { id: 'shield', name: 'Shield', description: 'Prezije 1 naraz do spiku', price: 20, type: 'consumable' },
   { id: 'speedBoost', name: 'Speed Boost', description: 'Rychlejsi pohyb o 30%', price: 40, type: 'permanent' },
-  { id: 'extraDash', name: 'Extra Dash', description: '2 dashe za skok misto 1', price: 60, type: 'permanent' },
+  { id: 'dash', name: 'Dash', description: '1 dash za skok', price: 30, type: 'permanent' },
   { id: 'magnet', name: 'Magnet', description: 'Pritahuje mince', price: 80, type: 'permanent' }
 ];
 
@@ -21,6 +21,13 @@ function setSave(data) {
 
 const shopGrid = document.getElementById('shopGrid');
 const coinBalance = document.getElementById('coinBalance');
+
+// Tester mode — everything is free
+const isTesterShop = new URLSearchParams(window.location.search).get('tester') === '1';
+
+if (isTesterShop) {
+  SHOP_ITEMS.forEach(item => item.price = 0);
+}
 
 function renderShop() {
   const save = getSave();

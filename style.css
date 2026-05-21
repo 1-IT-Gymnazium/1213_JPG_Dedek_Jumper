@@ -14,9 +14,10 @@ canvas {
   background: #24395e;
   display: block;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
 .gameWrapper {
@@ -39,34 +40,51 @@ canvas {
 
 .ui {
   position: absolute;
-  top: 1%;
-  left: 1%;
+  top: 0.5%;
+  left: 5.5%;
   z-index: 10;
   pointer-events: none;
 }
 
+.ui-top-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ui-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 8px;
+  min-width: 160px;
+}
+
 #level {
   color: #f5e6c8;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
-  text-align: right;
-  padding: 2px 12px;
+}
+
+#timer {
+  color: #f5e6c8;
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
 }
 
 #coins {
   color: #f5d060;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
-  padding: 2px 12px;
 }
 
 #activeItems {
   color: #aaffaa;
-  font-size: 11px;
-  margin-top: 2px;
-  padding-left: 12px;
+  font-size: 10px;
+  margin-top: 1px;
+  padding-left: 8px;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
 }
 

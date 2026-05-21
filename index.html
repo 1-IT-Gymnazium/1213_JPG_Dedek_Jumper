@@ -29,6 +29,10 @@ Shop
 Level Editor
 </button>
 
+<button id="testerBtn" style="display:none;background:rgba(255,215,0,0.9);" onclick="location.href='shop.html?tester=1'">
+Tester Mode (Shop)
+</button>
+
 </div>
 </div>
 
@@ -37,12 +41,32 @@ Level Editor
 if (localStorage.getItem('oldFartJumper_editor') === 'true') {
   document.getElementById('editorBtn').style.display = '';
 }
+// Show tester button if tester mode
+if (localStorage.getItem('oldFartJumper_tester') === 'true') {
+  document.getElementById('testerBtn').style.display = '';
+}
 // Ctrl+Shift+E to toggle editor mode
+// Ctrl+Shift+T to toggle tester mode (infinite coins)
 document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
     const isEditor = localStorage.getItem('oldFartJumper_editor') === 'true';
     localStorage.setItem('oldFartJumper_editor', isEditor ? 'false' : 'true');
     document.getElementById('editorBtn').style.display = isEditor ? 'none' : '';
+    e.preventDefault();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+    e.preventDefault();
+    if (confirm('Reset all coins and items?')) {
+      localStorage.setItem('oldFartJumper_save', JSON.stringify({ coins: 0, items: [] }));
+      localStorage.removeItem('oldFartJumper_testerSave');
+      location.reload();
+    }
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
+    const isTester = localStorage.getItem('oldFartJumper_tester') === 'true';
+    localStorage.setItem('oldFartJumper_tester', isTester ? 'false' : 'true');
+    document.getElementById('testerBtn').style.display = isTester ? 'none' : '';
     e.preventDefault();
   }
 });

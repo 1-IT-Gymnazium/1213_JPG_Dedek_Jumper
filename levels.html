@@ -7,29 +7,28 @@
 </head>
 
 <body>
-    <button onclick="location.href='game.html?level=0'">Tutorial</button>
-    <button onclick="location.href='game.html?level=1'">1</button>
-    <button onclick="location.href='game.html?level=2'">2</button>
-    <button onclick="location.href='game.html?level=3'">3</button>
-    <button onclick="location.href='game.html?level=4'">4</button>
-    <button onclick="location.href='game.html?level=5'">5</button>
 <div id="startScreen">
   <h1>Vyber Level</h1>
 
   <div class="menuButtons" style="flex-direction: row; flex-wrap: wrap; max-width: 600px; justify-content: center;">
-
-    <script>
-      for (let i = 1; i <= 10; i++) {
-        document.write(`
-          <button onclick="location.href='game.html?level=${i}'"
-            style="width:100px;height:100px;font-size:30px;">
-            ${i}
-          </button>
-        `);
-      }
-    </script>
-
   </div>
+
+  <script src="levels.js"></script>
+  <script>
+    const container = document.querySelector('.menuButtons');
+    let customLevels = [];
+    try {
+      customLevels = JSON.parse(localStorage.getItem('oldFartJumper_customLevels')) || [];
+    } catch(e) {}
+    const totalLevels = BUILT_IN_LEVELS.length + customLevels.length;
+    for (let i = 0; i < totalLevels; i++) {
+      const btn = document.createElement('button');
+      btn.style.cssText = 'width:100px;height:100px;font-size:30px;';
+      btn.textContent = i + 1;
+      btn.onclick = () => location.href = 'game.html?level=' + i;
+      container.appendChild(btn);
+    }
+  </script>
 
   <br>
 

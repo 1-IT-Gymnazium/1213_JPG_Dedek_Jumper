@@ -8,22 +8,28 @@
 <body>
     <div class="gameWrapper">
         <canvas id="game"></canvas>
-        <img src="layout.png" class="layoutOverlay" alt="">
+        <!-- layout drawn on canvas now -->
 
-        <div class="ui">
-            <div id="level">Lv 1</div>
-            <div id="coins">0</div>
-            <div id="activeItems"></div>
-            <button onclick="location.href='levels.html'" style="margin-top:8px;padding:4px 12px;font-size:12px;border:none;border-radius:4px;background:rgba(255,255,255,0.8);cursor:pointer;pointer-events:auto;">Menu</button>
+        <div class="ui" style="display:none">
+            <span id="level"></span>
+            <span id="timer"></span>
+            <span id="coins"></span>
+            <span id="activeItems"></span>
         </div>
+        <script>
+          const _isTry = new URLSearchParams(location.search).get('mode') === 'try';
+        </script>
+        <button id="menuBtn" onclick="_isTry ? location.href='editor.html' : location.href='levels.html'" style="position:absolute;top:12%;left:7%;z-index:10;padding:4px 12px;font-size:12px;border:none;border-radius:4px;background:rgba(255,255,255,0.8);cursor:pointer;"></button>
+        <script>document.getElementById('menuBtn').textContent = _isTry ? 'Back to Editor' : 'Menu';</script>
         
         <div id="deathScreen">
             <div class="deathBox">
-                <h2>💀 niha 💀</h2>
+                <h2>💀 Umřel jsi 💀</h2>
                 <button onclick="resetGame()">Restart</button>
             </div>
         </div>
     </div>
+    <script src="levels.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
