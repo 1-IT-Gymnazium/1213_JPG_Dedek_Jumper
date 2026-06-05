@@ -21,17 +21,41 @@ const isTesterShop = new URLSearchParams(window.location.search).get('tester') =
 if (isTesterShop) SHOP_ITEMS.forEach(item => item.price = 0);
 
 function renderShop() {
-  const save = getSave();
+  const save        = getSave();
+  const hasDiscount = sessionStorage.getItem('oldFartJumper_buff_discount') === 'true';
   coinBalance.innerHTML = `<img src="assets/ui/beer_coin.png" style="width:22px;height:22px;image-rendering:pixelated;"> ${save.coins}`;
+  if (hasDiscount) {
+    coinBalance.innerHTML +=
+      ' <span style="font-size:12px;color:#ffd700;font-family:Cinzel,serif;margin-left:8px;">★ 50% SLEVA AKTIVNÍ</span>';
+  }
   shopGrid.innerHTML = '';
 
   SHOP_ITEMS.forEach(item => {
-    const owned = item.type === 'permanent' && save.items.includes(item.id);
-    const canAfford = save.coins >= item.price;
+    const owned      = item.type === 'permanent' && save.items.includes(item.id);
+    const realPrice  = hasDiscount ? Math.ceil(item.price / 2) : item.price;
+    const canAfford  = save.coins >= realPrice;
     const shieldCount = item.id === 'shield' ? save.items.filter(i => i === 'shield').length : 0;
 
     const card = document.createElement('div');
     card.className = 'shop-card' + (owned ? ' owned' : '');
+
+    let priceHtml;
+    if (hasDiscount && !owned) {
+      priceHtml = `
+        <div class="shop-card-price" style="flex-direction:column;gap:1px;">
+          <span style="text-decoration:line-through;opacity:0.45;font-size:11px;">
+            <img src="assets/ui/beer_coin.png" style="width:12px;height:12px;image-rendering:pixelated;"> ${item.price}
+          </span>
+          <span style="color:#ffd700;">
+            <img src="assets/ui/beer_coin.png" style="width:16px;height:16px;image-rendering:pixelated;"> ${realPrice}
+          </span>
+        </div>`;
+    } else {
+      priceHtml = `
+        <div class="shop-card-price">
+          <img src="assets/ui/beer_coin.png" style="width:16px;height:16px;image-rendering:pixelated;"> ${item.price}
+        </div>`;
+    }
 
     let actionHtml;
     if (owned) {
@@ -50,9 +74,7 @@ function renderShop() {
       <img src="${item.icon}" class="shop-card-icon" alt="${item.name}">
       <div class="shop-card-name">${item.name}</div>
       <div class="shop-card-desc">${item.description}</div>
-      <div class="shop-card-price">
-        <img src="assets/ui/beer_coin.png" style="width:16px;height:16px;image-rendering:pixelated;"> ${item.price}
-      </div>
+      ${priceHtml}
       ${actionHtml}
     `;
 
@@ -67,10 +89,13 @@ function renderShop() {
 function buyItem(itemId) {
   const item = SHOP_ITEMS.find(i => i.id === itemId);
   if (!item) return;
-  const save = getSave();
-  if (save.coins < item.price) return;
+  const save        = getSave();
+  const hasDiscount = sessionStorage.getItem('oldFartJumper_buff_discount') === 'true';
+  const price       = hasDiscount ? Math.ceil(item.price / 2) : item.price;
+  if (save.coins < price) return;
   if (item.type === 'permanent' && save.items.includes(itemId)) return;
-  save.coins -= item.price;
+  if (hasDiscount) sessionStorage.removeItem('oldFartJumper_buff_discount');
+  save.coins -= price;
   save.items.push(itemId);
   setSave(save);
   renderShop();

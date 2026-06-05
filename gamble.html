@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Kolo Osudu – Dědek Jumper</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="startScreen" class="scrollable">
+  <h1>Kolo Osudu</h1>
+  <div id="coinBalance"></div>
+  <p class="gamble-desc">Štěstí přeje odvážným, Dědku!</p>
+
+  <div class="gamble-wheel-area">
+    <canvas id="wheelCanvas" width="460" height="460"></canvas>
+  </div>
+
+  <div class="gamble-controls">
+    <div class="gamble-cost">
+      Točení stojí
+      <img src="assets/ui/beer_coin.png" style="width:16px;height:16px;image-rendering:pixelated;vertical-align:middle;">
+      <strong>25 Piv</strong>
+    </div>
+    <button id="spinBtn" class="gamble-spin-btn" onclick="spin()">&#9654; Točit!</button>
+    <div id="spinMsg" class="gamble-msg"></div>
+  </div>
+
+  <div id="activeBuffs" class="gamble-active-buffs"></div>
+
+  <div class="menuButtons" style="margin-top:24px;">
+    <button onclick="location.href='index.html'">Zpět do Menu</button>
+  </div>
+</div>
+
+<div id="winNotification" class="win-notification">
+  <div class="win-rarity-label" id="winRarity"></div>
+  <div class="win-text" id="winText"></div>
+  <div class="win-subtext" id="winSubtext"></div>
+</div>
+
+<script src="gamble.js"></script>
+<script src="music.js"></script>
+</body>
+</html>

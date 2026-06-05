@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Dedek – Walk Animation Generator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #1a1208; color: #e8d4a0; font-family: 'Courier New', monospace;
+    padding: 24px; min-height: 100vh;
+  }
+  h1 { color: #c48a2e; font-size: 20px; margin-bottom: 6px; }
+  p  { color: #8a7040; font-size: 13px; margin-bottom: 4px; }
+
+  #drop {
+    border: 3px dashed #5a3a10; border-radius: 10px;
+    padding: 40px 20px; text-align: center; cursor: pointer;
+    transition: border-color .2s, background .2s; margin: 18px 0;
+    background: #1f160a;
+  }
+  #drop.over { border-color: #c48a2e; background: #2a1c0c; }
+  #drop span { font-size: 16px; color: #8a6030; }
+  #drop input { display: none; }
+
+  #status { color: #4ecdc4; font-size: 14px; margin: 10px 0; min-height: 20px; }
+
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  button {
+    padding: 9px 20px; border: none; cursor: pointer; border-radius: 5px;
+    font-family: inherit; font-weight: bold; font-size: 13px;
+  }
+  .btn-main { background: #c48a2e; color: #000; }
+  .btn-main:hover { background: #e0a035; }
+  .btn-main:disabled { background: #5a4010; color: #3a2a10; cursor: default; }
+  .btn-sec  { background: #3a2a10; color: #c48a2e; }
+  .btn-sec:hover { background: #4a3a18; }
+
+  #log { color: #888060; font-size: 12px; margin-bottom: 14px; min-height: 16px; }
+
+  .frames { display: flex; flex-wrap: wrap; gap: 10px; }
+  .frame-box { text-align: center; }
+  .frame-box canvas {
+    display: block; border: 1px solid #3a2a10;
+    width: 120px; height: auto;
+    image-rendering: pixelated; image-rendering: crisp-edges;
+  }
+  .frame-box span { display: block; font-size: 11px; color: #6a5030; margin-top: 3px; }
+
+  .tip { background: #200e00; border-left: 3px solid #c48a2e; padding: 10px 14px;
+    font-size: 12px; color: #8a7040; margin: 14px 0; border-radius: 0 5px 5px 0; }
+  .tip b { color: #c48a2e; }
+  code { background: #2a1c0a; padding: 1px 5px; border-radius: 3px; color: #e8c070; }
+</style>
+</head>
+<body>
+
+<h1>Dedek Walk Animation Generator</h1>
+<p>Generuje 10 frame animace chůze ze stejného spriteu – beze změny vzhledu postavy.</p>
+
+<div id="drop" onclick="document.getElementById('fi').click()">
+  <span>🖼 Přetáhni sem <b>walk1.png</b><br>(nebo klikni pro výběr souboru)</span>
+  <input type="file" id="fi" accept="image/png">
+</div>
+
+<div id="status">Čekám na obrázek…</div>
+<div class="btns">
+  <button class="btn-main" id="dlBtn" disabled onclick="downloadAll()">⬇ Stáhnout všech 10 framů</button>
+  <button class="btn-sec"  id="regenBtn" disabled onclick="regenerate()">↺ Znovu vygenerovat</button>
+</div>
+<div id="log"></div>
+<div class="frames" id="framesDiv"></div>
+
+<div class="tip">
+  <b>Jak použít:</b><br>
+  1. Přetáhni <code>assets/player/walk1.png</code> do boxu výše<br>
+  2. Klikni „Stáhnout" — prohlížeč stáhne <code>walk1.png … walk10.png</code><br>
+  3. Přesuň stažené soubory do <code>assets/player/</code> (přepíší walk1–4, přidají walk5–10)<br>
+  4. Script.js byl upraven aby načítal 10 framů automaticky
+</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════════════════════
+const N_FRAMES   = 10;
+const WAIST_FRAC = 0.58;   // fraction of char height = waistline split
+
+// Walk cycle parameters
+const MAX_SWING  = 0.48;   // max leg swing in radians (~27°)
+const SHIN_FLEX  = 0.30;   // max shin-bend (knee flex) at recovery
+const BOB_BLOCKS = 1.0;    // body-bob amplitude in "block" units
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════════
+let IW = 0, IH = 0;
+let charBounds = null;
+let baseImageData = null;
+let blockSz = 6;
+let OUTPUT = [];
+
+// Detected palette
+let PAL = {
+  jeans:     [42,  74, 140],
+  jeansDark: [22,  44,  90],
+  shoe:      [180, 30,  30],
+  shoeDark:  [120, 14,  14],
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FILE INPUT / DRAG-DROP
+// ═══════════════════════════════════════════════════════════════════════════
+const drop = document.getElementById('drop');
+const fi   = document.getElementById('fi');
+
+drop.addEventListener('dragover',  e => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', e => {
+  e.preventDefault();
+  drop.classList.remove('over');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+});
+fi.addEventListener('change', () => { if (fi.files[0]) processFile(fi.files[0]); });
+
+function processFile(file) {
+  setStatus('Načítám sprite…');
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    init(img);
+  };
+  img.onerror = () => { setStatus('❌ Nelze načíst obrázek.'); URL.revokeObjectURL(url); };
+  img.src = url;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INIT – analyse source image
+// ═══════════════════════════════════════════════════════════════════════════
+function init(img) {
+  IW = img.naturalWidth;
+  IH = img.naturalHeight;
+
+  const tc  = makeCtx(IW, IH);
+  tc.drawImage(img, 0, 0);
+  baseImageData = tc.getImageData(0, 0, IW, IH);
+
+  charBounds = findBounds(baseImageData);
+  if (!charBounds) { setStatus('❌ Postava nebyla nalezena (prázdný obrázek?).'); return; }
+
+  // Pixel-art block size ≈ charH / 30
+  blockSz = Math.max(3, Math.round(charBounds.h / 30));
+
+  sampleColors(tc, charBounds, blockSz);
+
+  setStatus(`✅ ${IW}×${IH}px · postava ${charBounds.w}×${charBounds.h}px · blok=${blockSz}px · generuji…`);
+  buildAll();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// COLOUR SAMPLING
+// ═══════════════════════════════════════════════════════════════════════════
+function sampleColors(tc, b, bs) {
+  // Jeans: mid-shin band
+  const jeansY = Math.floor(b.minY + b.h * 0.72);
+  const jH     = Math.max(bs * 2, Math.ceil(b.h * 0.08));
+  const jPal   = dominantColor(tc.getImageData(b.minX, jeansY, b.w, jH).data, true);
+  if (jPal) {
+    PAL.jeans     = jPal;
+    PAL.jeansDark = jPal.map((v, i) => Math.max(0, v - [40, 28, 28][i]));
+  }
+
+  // Shoe: bottom 12% of character (look for reddish pixels)
+  const shoeY = Math.floor(b.minY + b.h * 0.86);
+  const sH    = Math.max(bs * 2, Math.ceil(b.h * 0.12));
+  const sPal  = dominantColor(tc.getImageData(b.minX, shoeY, b.w, sH).data, false, true);
+  if (sPal) {
+    PAL.shoe     = sPal;
+    PAL.shoeDark = sPal.map((v, i) => Math.max(0, v - [55, 22, 22][i]));
+  }
+
+  setLog(`džíny=rgb(${PAL.jeans.join(',')})  boty=rgb(${PAL.shoe.join(',')})`);
+}
+
+// Returns [r,g,b] of most-common opaque pixel (quantised to 8-step buckets)
+function dominantColor(data, preferBlue, preferRed) {
+  const hist = {};
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 30) continue;
+    const r = data[i], g = data[i+1], b = data[i+2];
+    if (preferBlue && b < g + 30 && b < r + 30) continue; // skip non-blue
+    if (preferRed  && r < g + 30 && r < b + 30) continue; // skip non-red
+    const key = `${r>>3},${g>>3},${b>>3}`;
+    hist[key] = (hist[key] || 0) + 1;
+  }
+  let best = null, bestN = 0;
+  for (const [k, n] of Object.entries(hist)) {
+    if (n > bestN) { bestN = n; best = k; }
+  }
+  if (!best) return null;
+  return best.split(',').map(v => Math.round(+v * 8 + 4));
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BOUNDS DETECTION
+// ═══════════════════════════════════════════════════════════════════════════
+function findBounds(imgData) {
+  const { data, width: W, height: H } = imgData;
+  let mnX = W, mxX = 0, mnY = H, mxY = 0, found = false;
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (data[(y * W + x) * 4 + 3] > 15) {
+        if (x < mnX) mnX = x; if (x > mxX) mxX = x;
+        if (y < mnY) mnY = y; if (y > mxY) mxY = y;
+        found = true;
+      }
+    }
+  }
+  if (!found) return null;
+  return { minX: mnX, maxX: mxX, minY: mnY, maxY: mxY,
+    w: mxX - mnX, h: mxY - mnY, cx: (mnX + mxX) / 2, cy: (mnY + mxY) / 2 };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GENERATE ALL 10 FRAMES
+// ═══════════════════════════════════════════════════════════════════════════
+function buildAll() {
+  OUTPUT = [];
+  const container = document.getElementById('framesDiv');
+  container.innerHTML = '';
+
+  for (let fi = 0; fi < N_FRAMES; fi++) {
+    const cv = buildFrame(fi);
+    OUTPUT.push(cv);
+
+    const box = document.createElement('div');
+    box.className = 'frame-box';
+    box.appendChild(cv);
+    const lbl = document.createElement('span');
+    lbl.textContent = `walk${fi + 1}.png`;
+    box.appendChild(lbl);
+    container.appendChild(box);
+  }
+
+  document.getElementById('dlBtn').disabled    = false;
+  document.getElementById('regenBtn').disabled = false;
+  setStatus(`✅ ${N_FRAMES} framů vygenerováno — klikni "Stáhnout".`);
+}
+
+function regenerate() {
+  if (!baseImageData) return;
+  document.getElementById('dlBtn').disabled = true;
+  buildAll();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BUILD ONE FRAME
+// ═══════════════════════════════════════════════════════════════════════════
+function buildFrame(fi) {
+  const phase = (fi / N_FRAMES) * Math.PI * 2;
+  const b     = charBounds;
+  const bs    = blockSz;
+
+  // Vertical body bob (dips at contact, rises at passing)
+  const bobY = Math.sin(phase * 2) * bs * BOB_BLOCKS;
+
+  // Waist cut: clear everything below here, then draw new legs
+  const waistAbs = b.minY + b.h * WAIST_FRAC + bobY;
+  const waistPx  = Math.floor(waistAbs);
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = IW;
+  canvas.height = IH;
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+
+  // ── 1. Stamp full source image (head + torso + arms) ─────────────
+  ctx.putImageData(baseImageData, 0, 0);
+
+  // ── 2. Erase from waist down (remove original legs) ───────────────
+  ctx.clearRect(0, waistPx, IW, IH - waistPx);
+
+  // ── 3. Draw new legs ───────────────────────────────────────────────
+  drawLegs(ctx, b, waistAbs, phase, bs);
+
+  return canvas;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEG DRAWING
+// ═══════════════════════════════════════════════════════════════════════════
+function drawLegs(ctx, b, waistY, phase, bs) {
+  const legLen  = b.h * 0.41;
+  const thighH  = legLen * 0.45;
+  const shinH   = legLen * 0.55;
+  const legW    = Math.max(bs * 1.8, 4);  // leg thickness
+  const footW   = bs * 5.2;
+  const footH   = bs * 1.8;
+
+  // Hip positions: slight x-offset for depth illusion
+  const hipLX  = b.cx + bs * 0.5;   // front-hip (left leg)
+  const hipRX  = b.cx - bs * 0.5;   // back-hip  (right leg)
+  const hipY   = waistY + bs * 0.5;
+
+  // Leg swing angles
+  const angL = Math.sin(phase) * MAX_SWING;
+  const angR = Math.sin(phase + Math.PI) * MAX_SWING;
+
+  // Shin flex (knee bends inward on back-swing recovery)
+  const flxL = Math.max(0, -Math.sin(phase - 0.5))    * SHIN_FLEX;
+  const flxR = Math.max(0, -Math.sin(phase + Math.PI - 0.5)) * SHIN_FLEX;
+
+  // Draw back leg first (whichever has smaller swing = further back)
+  const legs = [
+    { hx: hipRX, ang: angR, flx: flxR, back: true  },
+    { hx: hipLX, ang: angL, flx: flxL, back: false },
+  ];
+  // Sort: leg with smaller angle (more behind) drawn first
+  legs.sort((a2, b2) => Math.abs(a2.ang) - Math.abs(b2.ang));
+
+  for (const leg of legs) {
+    oneLeg(ctx, leg.hx, hipY, leg.ang, leg.flx,
+           thighH, shinH, legW, footW, footH, bs, leg.back);
+  }
+}
+
+function oneLeg(ctx, hx, hy, angle, flex, thH, shH, lW, fW, fH, bs, isBack) {
+  const dim = isBack ? 0.72 : 1.0;   // back leg slightly darker
+
+  // Snap to pixel grid
+  const S = v => Math.round(v / bs) * bs;
+
+  // Knee
+  const kx = hx + Math.sin(angle) * thH;
+  const ky = hy + Math.cos(angle) * thH;
+
+  // Shin direction (flexes inward toward body on recovery)
+  const shinAng = angle - flex * Math.sign(angle + 0.001);
+  const ax = kx + Math.sin(shinAng) * shH;
+  const ay = ky + Math.cos(shinAng) * shH;
+
+  // ── Thigh ─────────────────────────────────────────────────────────
+  pixLine(ctx, S(hx), S(hy), S(kx), S(ky), lW, PAL.jeans, PAL.jeansDark, bs, dim);
+
+  // ── Shin ──────────────────────────────────────────────────────────
+  pixLine(ctx, S(kx), S(ky), S(ax), S(ay), lW * 0.88, PAL.jeans, PAL.jeansDark, bs, dim * 0.9);
+
+  // ── Shoe ──────────────────────────────────────────────────────────
+  const footDir = ax >= hx ? 1 : -1;
+  const fx = S(ax) - fW * 0.18 + footDir * fW * 0.08;
+  const fy = S(ay);
+  pixRect(ctx, fx, fy, fW, fH, PAL.shoe, PAL.shoeDark, bs, dim);
+
+  // Ankle cuff (small strip of jeans above shoe)
+  pixRect(ctx, S(ax) - lW * 0.5, S(ay) - bs, lW, bs, PAL.jeans, PAL.jeansDark, bs, dim);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PIXEL-ART RENDERING HELPERS
+// ═══════════════════════════════════════════════════════════════════════════
+function rgbStr([r, g, b], dim) {
+  return `rgb(${~~(r*dim)},${~~(g*dim)},${~~(b*dim)})`;
+}
+
+// Draw a thick, pixel-grid-snapped line (for thigh / shin)
+function pixLine(ctx, x0, y0, x1, y1, thick, cL, cD, bs, dim) {
+  const dx = x1 - x0, dy = y1 - y0;
+  const len = Math.sqrt(dx*dx + dy*dy);
+  const steps = Math.max(1, Math.ceil(len / bs));
+  const hw = Math.ceil(thick / 2);
+  for (let s = 0; s <= steps; s++) {
+    const t  = s / steps;
+    const px = Math.round((x0 + dx * t) / bs) * bs;
+    const py = Math.round((y0 + dy * t) / bs) * bs;
+    ctx.fillStyle = rgbStr(t > 0.55 ? cD : cL, dim);
+    ctx.fillRect(px - hw, py - hw, thick, thick);
+  }
+}
+
+// Draw a pixel-art rectangle with bottom/side shadow row
+function pixRect(ctx, x, y, w, h, cL, cD, bs, dim) {
+  const rx = Math.round(x / bs) * bs;
+  const ry = Math.round(y / bs) * bs;
+  const rw = Math.max(bs, Math.round(w / bs) * bs);
+  const rh = Math.max(bs, Math.round(h / bs) * bs);
+  ctx.fillStyle = rgbStr(cL, dim);
+  ctx.fillRect(rx, ry, rw, rh);
+  ctx.fillStyle = rgbStr(cD, dim);
+  ctx.fillRect(rx, ry + rh - bs, rw, bs);      // bottom shadow
+  ctx.fillRect(rx + rw - bs, ry, bs, rh - bs); // right shadow
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DOWNLOAD
+// ═══════════════════════════════════════════════════════════════════════════
+function downloadAll() {
+  if (!OUTPUT.length) return;
+  let done = 0;
+  OUTPUT.forEach((cv, i) => {
+    cv.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `walk${i + 1}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+      if (++done === OUTPUT.length) {
+        setLog(`✅ Staženo ${done} souborů → přesuň do assets/player/`);
+      }
+    }, 'image/png');
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════
+function makeCtx(w, h) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  return ctx;
+}
+function setStatus(msg) { document.getElementById('status').textContent = msg; }
+function setLog(msg)    { document.getElementById('log').textContent    = msg; }
+</script>
+</body>
+</html>

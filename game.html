@@ -67,10 +67,6 @@
                         <input type="range" id="musicVolSlider" min="0" max="1" step="0.01">
                     </div>
                     <div class="setting-row">
-                        <label>Sound Effects <span id="sfxVolVal"></span></label>
-                        <input type="range" id="sfxVolSlider" min="0" max="1" step="0.01">
-                    </div>
-                    <div class="setting-row">
                         <label>Master Volume <span id="masterVolVal"></span></label>
                         <input type="range" id="masterVolSlider" min="0" max="1" step="0.01">
                     </div>
@@ -85,9 +81,19 @@
         </div>
 
         <div id="brightnessOverlay"></div>
+
+        <!-- Loading screen — visible by default, hidden once player is grounded -->
+        <div id="loadingScreen" class="loading-screen">
+          <div class="loading-inner">
+            <img src="assets/ui/beer_coin.png" class="loading-coin" alt="">
+            <div class="loading-lv" id="loadingLv">Načítání...</div>
+            <div class="loading-hint">Dědek si dává pivo...</div>
+          </div>
+        </div>
     </div>
 
     <script src="levels.js"></script>
+    <script src="music.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
