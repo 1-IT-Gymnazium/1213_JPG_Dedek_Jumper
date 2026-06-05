@@ -85,6 +85,8 @@ const DASH_FPS = 14;
 const JUMP_FPS = 10;
 const skikesImg = new Image();
 skikesImg.src = 'assets/ui/skikes.png';
+const beerCoinImg = new Image();
+beerCoinImg.src = 'assets/ui/beer_coin.png';
 const grassImg = new Image();
 grassImg.src = 'assets/tiles/grass.png';
 const dirtImg = new Image();
@@ -200,6 +202,7 @@ let lastTime = 0;
 let cameraX = 0;
 let levelCoins = [];
 let tempCoins = 0;
+let coinParticles = [];
 let savedCoins = getSave().coins;
 let winning = false;
 
@@ -233,6 +236,7 @@ function loadLevel() {
   player.dashing = 0;
   walkTimer = 0;
   tempCoins = 0;
+  coinParticles = [];
   winning = false;
   winAnimFrame = 0;
   winAnimTime = 0;
@@ -485,6 +489,21 @@ function update(delta) {
       coinsEl.innerText = savedCoins + tempCoins;
       sounds.coin.currentTime = 0;
       sounds.coin.play().catch(() => {});
+      // Spawn particles
+      const cx = c.x + c.width / 2;
+      const cy = c.y + c.height / 2;
+      for (let i = 0; i < 12; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1 + Math.random() * 3;
+        coinParticles.push({
+          x: cx, y: cy,
+          dx: Math.cos(angle) * speed,
+          dy: Math.sin(angle) * speed - 1.5,
+          life: 1.0,
+          size: 2 + Math.random() * 4,
+          color: Math.random() > 0.5 ? '#f5a623' : '#ffd700'
+        });
+      }
     }
   }
 
@@ -685,28 +704,60 @@ function draw() {
     ctx.fillRect(winZone.x, winZone.y, winZone.width, winZone.height);
   }
 
-  // SPIKES - TEXTURA skikes.png
+  // SPIKES - TEXTURA skikes.png (rendered larger than hitbox, anchored to ground)
   spikes.forEach(s => {
     if (skikesImg.complete) {
-      ctx.drawImage(skikesImg, s.x, s.y, s.width, s.height);
+      const drawW = s.width * 2.5;
+      const drawH = s.height * 2;
+      const drawX = s.x + (s.width - drawW) / 2;
+      const drawY = s.y + s.height - drawH + 29;
+      ctx.drawImage(skikesImg, drawX, drawY, drawW, drawH);
     } else {
       ctx.fillStyle = "red";  // Fallback
       ctx.fillRect(s.x, s.y, s.width, s.height);
     }
   });
 
-  // COINS - yellow circles with shimmer
+  // COINS - beer texture
   levelCoins.forEach(c => {
     if (c.collected) return;
-    const shimmer = Math.sin(Date.now() / 200 + c.x) * 0.3 + 0.7;
-    ctx.fillStyle = `rgba(255, 215, 0, ${shimmer})`;
-    ctx.beginPath();
-    ctx.arc(c.x + c.width / 2, c.y + c.height / 2, c.width / 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#b8860b';
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    if (beerCoinImg.complete && beerCoinImg.naturalWidth > 0) {
+      const aspect = beerCoinImg.naturalWidth / beerCoinImg.naturalHeight;
+      const drawH = c.height * 2.5;
+      const drawW = drawH * aspect;
+      const drawX = c.x + (c.width - drawW) / 2;
+      const bob = Math.sin(Date.now() / 300 + c.x) * 5;
+      const drawY = c.y + (c.height - drawH) / 2 + bob;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(beerCoinImg, drawX, drawY, drawW, drawH);
+      ctx.imageSmoothingEnabled = true;
+    } else {
+      const shimmer = Math.sin(Date.now() / 200 + c.x) * 0.3 + 0.7;
+      ctx.fillStyle = `rgba(255, 215, 0, ${shimmer})`;
+      ctx.beginPath();
+      ctx.arc(c.x + c.width / 2, c.y + c.height / 2, c.width / 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
   });
+
+  // COIN PARTICLES
+  for (let i = coinParticles.length - 1; i >= 0; i--) {
+    const p = coinParticles[i];
+    p.x += p.dx;
+    p.y += p.dy;
+    p.dy += 0.05;
+    p.life -= 0.02;
+    if (p.life <= 0) {
+      coinParticles.splice(i, 1);
+      continue;
+    }
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
 
   // DEDEK - animovana textura + facing flip
   let currentDedekImg = dedekImg;
