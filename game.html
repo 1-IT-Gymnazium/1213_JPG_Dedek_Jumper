@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Dědek Jumper</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div style="position:absolute;visibility:hidden;font-family:'Cinzel'">.</div>
+    <div class="gameWrapper">
+        <canvas id="game"></canvas>
+        <!-- layout drawn on canvas now -->
+
+        <div class="ui" style="display:none">
+            <span id="level"></span>
+            <span id="timer"></span>
+            <span id="coins"></span>
+            <span id="activeItems"></span>
+        </div>
+        <script>
+          const _isTry = new URLSearchParams(location.search).get('mode') === 'try';
+        </script>
+        <button id="menuBtn"></button>
+        <script>document.getElementById('menuBtn').textContent = _isTry ? 'Back to Editor' : 'Menu';</script>
+
+        <div id="deathScreen">
+            <div class="death-panel">
+                <h2 class="death-title">ZEMŘEL SI</h2>
+                <div class="death-stats">
+                    <div class="death-stat-row">
+                        <span class="death-stat-label">Level</span>
+                        <span class="death-stat-value" id="deathLevel">—</span>
+                    </div>
+                    <div class="death-stat-row">
+                        <span class="death-stat-label">Čas</span>
+                        <span class="death-stat-value" id="deathTime">—</span>
+                    </div>
+                    <div class="death-stat-row">
+                        <span class="death-stat-label">Sebral jsi</span>
+                        <span class="death-stat-value" id="deathCoins">—</span>
+                    </div>
+                    <div class="death-stat-row">
+                        <span class="death-stat-label">Smrtí v session</span>
+                        <span class="death-stat-value" id="deathTotal">—</span>
+                    </div>
+                </div>
+                <div class="death-buttons">
+                    <button class="pause-btn" id="deathRetryBtn">Zkusit znovu</button>
+                    <button class="pause-btn" id="deathHomeBtn">Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pauseOverlay">
+            <div class="pause-panel">
+                <div id="mainPauseContent">
+                    <h2>Paused</h2>
+                    <button class="pause-btn" id="resumeBtn">Resume</button>
+                    <button class="pause-btn" id="goMenuBtn">Go to Menu</button>
+                    <button class="pause-btn" id="settingsBtn">Settings</button>
+                </div>
+                <div class="settings-panel" id="settingsPanel">
+                    <h2>Settings</h2>
+                    <div class="setting-row">
+                        <label>Music Volume <span id="musicVolVal"></span></label>
+                        <input type="range" id="musicVolSlider" min="0" max="1" step="0.01">
+                    </div>
+                    <div class="setting-row">
+                        <label>Sound Effects <span id="sfxVolVal"></span></label>
+                        <input type="range" id="sfxVolSlider" min="0" max="1" step="0.01">
+                    </div>
+                    <div class="setting-row">
+                        <label>Master Volume <span id="masterVolVal"></span></label>
+                        <input type="range" id="masterVolSlider" min="0" max="1" step="0.01">
+                    </div>
+                    <div class="setting-row">
+                        <label>Brightness <span id="brightnessVal"></span></label>
+                        <input type="range" id="brightnessSlider" min="0" max="100" step="1">
+                    </div>
+                    <button class="pause-btn" id="fullscreenBtn">Fullscreen</button>
+                    <button class="pause-btn" id="backBtn">&#8592; Back</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="brightnessOverlay"></div>
+    </div>
+
+    <script src="levels.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

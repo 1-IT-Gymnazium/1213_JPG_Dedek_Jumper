@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Dědek Jumper</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="startScreen">
+  <img src="assets/ui/logo.png" class="game-logo" alt="Dědek Jumper">
+
+  <div class="menuButtons">
+    <button onclick="location.href='levels.html'">Normal Mode</button>
+    <button onclick="startGame('challenge')">Challenge Mode</button>
+    <button onclick="location.href='shop.html?from=menu'">Shop</button>
+    <button id="editorBtn" style="display:none" onclick="location.href='editor.html'">Level Editor</button>
+    <button id="testerBtn" style="display:none" onclick="location.href='shop.html?tester=1'">Tester Mode</button>
+    <button id="menuFsBtn" onclick="toggleFullscreen()">Fullscreen</button>
+  </div>
+</div>
+
+<script>
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+}
+function updateFsLabel() {
+  const btn = document.getElementById('menuFsBtn');
+  if (btn) btn.textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen';
+}
+document.addEventListener('fullscreenchange', updateFsLabel);
+document.addEventListener('webkitfullscreenchange', updateFsLabel);
+</script>
+
+<script>
+if (sessionStorage.getItem('oldFartJumper_editor') === 'true') {
+  document.getElementById('editorBtn').style.display = '';
+}
+if (sessionStorage.getItem('oldFartJumper_tester') === 'true') {
+  document.getElementById('testerBtn').style.display = '';
+}
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
+    const isEditor = sessionStorage.getItem('oldFartJumper_editor') === 'true';
+    sessionStorage.setItem('oldFartJumper_editor', isEditor ? 'false' : 'true');
+    document.getElementById('editorBtn').style.display = isEditor ? 'none' : '';
+    e.preventDefault();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+    e.preventDefault();
+    if (confirm('Reset all coins and items?')) {
+      sessionStorage.setItem('oldFartJumper_save', JSON.stringify({ coins: 0, items: [] }));
+      sessionStorage.removeItem('oldFartJumper_testerSave');
+      location.reload();
+    }
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
+    const isTester = sessionStorage.getItem('oldFartJumper_tester') === 'true';
+    sessionStorage.setItem('oldFartJumper_tester', isTester ? 'false' : 'true');
+    document.getElementById('testerBtn').style.display = isTester ? 'none' : '';
+    e.preventDefault();
+  }
+});
+</script>
+
+</body>
+</html>

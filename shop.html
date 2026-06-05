@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Obchod</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="startScreen" class="scrollable">
+  <h1>Obchod</h1>
+  <div id="coinBalance"></div>
+
+  <div id="shopGrid" class="shop-grid-new"></div>
+
+  <div class="menuButtons" style="margin-top:28px;">
+    <button id="shopBackBtn">Zpět</button>
+  </div>
+  <script>
+    const _backDest = new URLSearchParams(location.search).get('from') === 'menu' ? 'index.html' : 'levels.html';
+    document.getElementById('shopBackBtn').onclick = () => location.href = _backDest;
+  </script>
+</div>
+
+<script src="shop.js"></script>
+</body>
+</html>

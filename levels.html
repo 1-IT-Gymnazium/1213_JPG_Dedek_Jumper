@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Výběr levelu</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div id="startScreen" class="scrollable">
+  <h1>Choose Level</h1>
+
+  <div class="level-grid" id="levelGrid"></div>
+
+  <div class="menuButtons" style="margin-top:22px; flex-direction:row; gap:12px;">
+    <button onclick="location.href='shop.html?from=levels'">Shop</button>
+    <button onclick="location.href='index.html'">Menu</button>
+  </div>
+</div>
+
+<script src="levels.js"></script>
+<script>
+  const container = document.getElementById('levelGrid');
+  let customLevels = [];
+  try { customLevels = JSON.parse(localStorage.getItem('oldFartJumper_customLevels')) || []; } catch(e) {}
+  const totalLevels = BUILT_IN_LEVELS.length + customLevels.length;
+  for (let i = 0; i < totalLevels; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'level-btn';
+    btn.textContent = i + 1;
+    btn.onclick = () => location.href = 'game.html?level=' + i;
+    container.appendChild(btn);
+  }
+</script>
+</body>
+</html>
