@@ -336,7 +336,8 @@ try {
   customLevels.forEach(cl => levels.push(cl));
 } catch(e) {}
 
-let platforms, spikes, winZone, grounds, dirts, invisibles;
+let platforms, spikes, winZone, grounds, dirts, invisibles, bouncePads, movingPlatforms;
+let currentDifficulty = 'easy';
 let currentLevelLength = 2000;
 let hasCustomTerrain = false;
 let nearTavern = false;
@@ -379,6 +380,9 @@ function loadLevel() {
   currentBg = (currentBgIndex !== null && bgImages[currentBgIndex]) ? bgImages[currentBgIndex] : null;
   spikes = lvl.spikes;
   winZone = lvl.winZone;
+  bouncePads = lvl.bouncePads || [];
+  movingPlatforms = (lvl.movingPlatforms || []).map(mp => ({ ...mp }));
+  currentDifficulty = lvl.difficulty || 'easy';
   levelCoins = (lvl.coins || []).map(c => ({ ...c, collected: false }));
   levelEl.innerText = isTryMode ? "Try" : "Lv " + (level + 1);
   const _loadLv = document.getElementById('loadingLv');
@@ -600,9 +604,19 @@ function update(delta) {
     return;
   }
 
-  // Platform collision
+  // Update moving platforms — store per-frame displacement for carrier movement
+  for (let mp of movingPlatforms) {
+    const prevX = mp.x;
+    mp._t = (mp._t || 0) + delta;
+    mp.x = mp.startX + Math.sin(mp._t * mp.speed) * mp.amplitude;
+    mp._vx = mp.x - prevX;
+  }
+
+  // Platform collision (regular + moving)
+  let _ridingPlatform = null;
   player.grounded = false;
-  for (let p of platforms) {
+  const _allPlatforms = platforms.concat(movingPlatforms);
+  for (let p of _allPlatforms) {
     // Legacy levels (no custom terrain) use +45 offset for big grass platforms;
     // editor levels always use p.y so resized stone platforms work correctly
     const collisionY = (!hasCustomTerrain && p.height >= 100) ? p.y + 45 : p.y;
@@ -615,7 +629,30 @@ function update(delta) {
       player.dy = 0;
       player.grounded = true;
       player.dashesLeft = player.hasDash ? 1 : 0;
+      if (movingPlatforms.indexOf(p) !== -1) _ridingPlatform = p;
       break;
+    }
+  }
+  // Carrier: slide player with platform so they don't need to walk
+  if (_ridingPlatform) {
+    player.x += _ridingPlatform._vx || 0;
+  }
+
+  // Bounce pads (only when falling and not already grounded on regular floor)
+  if (!player.grounded) {
+    for (let b of bouncePads) {
+      if (player.dy > 0 &&
+          player.x + 8 < b.x + b.width - 8 &&
+          player.x + player.width - 8 > b.x + 8 &&
+          player.y + player.height >= b.y &&
+          player.y + player.height <= b.y + (b.height || 17) + Math.abs(player.dy * delta * 60) + 4) {
+        player.y = b.y - player.height;
+        player.dy = -(b.power || 25);
+        player.grounded = false;
+        player.canDoubleJump = player.hasDoubleJump;
+        player.dashesLeft = player.hasDash ? 1 : 0;
+        break;
+      }
     }
   }
 
@@ -1095,6 +1132,105 @@ function draw() {
     ctx.fillStyle = "yellow";
     ctx.fillRect(winZone.x, winZone.y, winZone.width, winZone.height);
   }
+
+  // MOVING PLATFORMS — Terraria wooden bridge style
+  movingPlatforms.forEach(mp => {
+    const pw = mp.width, ph = 20, px = Math.round(mp.x), py = mp.y;
+    ctx.save();
+    // Main plank body
+    ctx.fillStyle = '#6B3A1F';
+    ctx.fillRect(px, py, pw, ph);
+    // Plank grain stripes
+    ctx.fillStyle = '#7D4A28';
+    for (let ty = py + 3; ty < py + ph - 2; ty += 5) {
+      ctx.fillRect(px + 1, ty, pw - 2, 3);
+    }
+    // Top highlight edge
+    ctx.fillStyle = '#9A5E30';
+    ctx.fillRect(px, py, pw, 3);
+    // Bottom dark edge
+    ctx.fillStyle = '#4A2210';
+    ctx.fillRect(px, py + ph - 3, pw, 3);
+    // Nail dots every 16px
+    ctx.fillStyle = '#3A1A08';
+    for (let nx = px + 8; nx < px + pw - 4; nx += 16) {
+      ctx.fillRect(nx, py + 8, 3, 3);
+    }
+    // Rope/chain supports hanging down (bridge feel)
+    ctx.strokeStyle = '#5A3A18';
+    ctx.lineWidth = 1.5;
+    const supportCount = Math.max(2, Math.floor(pw / 40));
+    for (let si = 0; si < supportCount; si++) {
+      const sx = px + (si + 1) * pw / (supportCount + 1);
+      ctx.beginPath();
+      ctx.moveTo(sx, py + ph);
+      ctx.lineTo(sx - 4, py + ph + 10);
+      ctx.lineTo(sx + 4, py + ph + 10);
+      ctx.stroke();
+    }
+    // Animated glow underline (shows it's moving)
+    const glow = (Math.sin(Date.now() / 350) + 1) * 0.18 + 0.06;
+    ctx.globalAlpha = glow;
+    ctx.fillStyle = '#FFD080';
+    ctx.fillRect(px, py, pw, 2);
+    ctx.restore();
+  });
+
+  // BOUNCE PADS — Terraria spring / booster tile
+  bouncePads.forEach(b => {
+    const bw = b.width, bh = b.height || 17;
+    const pulse = (Math.sin(Date.now() / 280) + 1) * 0.5;
+    const compress = 0.65 + pulse * 0.35; // coil compress anim
+    ctx.save();
+    // Base plate — dark metal
+    ctx.fillStyle = '#2A2A2A';
+    ctx.fillRect(b.x, b.y + bh - 5, bw, 5);
+    // Bolts on base
+    ctx.fillStyle = '#505050';
+    ctx.fillRect(b.x + 2, b.y + bh - 4, 3, 3);
+    ctx.fillRect(b.x + bw - 5, b.y + bh - 4, 3, 3);
+    // Spring coils (zigzag)
+    const coilH = (bh - 9) * compress;
+    const coilBaseY = b.y + bh - 6;
+    const coilTopY = coilBaseY - coilH;
+    const coilCount = Math.max(2, Math.floor(bw / 16));
+    ctx.strokeStyle = '#B8B8C8';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (let ci = 0; ci < coilCount; ci++) {
+      const cx0 = b.x + (ci + 0.15) * (bw / coilCount);
+      const cx1 = b.x + (ci + 0.85) * (bw / coilCount);
+      const steps = 5;
+      ctx.beginPath();
+      ctx.moveTo((cx0 + cx1) / 2, coilBaseY);
+      for (let s = 0; s < steps; s++) {
+        const fy = coilBaseY - coilH * (s + 0.5) / steps;
+        ctx.lineTo(s % 2 === 0 ? cx1 : cx0, fy);
+      }
+      ctx.lineTo((cx0 + cx1) / 2, coilTopY);
+      ctx.stroke();
+    }
+    // Top launch pad — bright green/yellow
+    ctx.fillStyle = `rgb(${Math.round(80 + pulse * 60)},${Math.round(200 + pulse * 55)},40)`;
+    ctx.fillRect(b.x + 1, b.y, bw - 2, 5);
+    // Highlight stripe on pad
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillRect(b.x + 3, b.y + 1, bw - 6, 2);
+    // Up arrows
+    ctx.globalAlpha = 0.55 + pulse * 0.45;
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    const arrowX = b.x + bw / 2;
+    const arrowTip = b.y - 5 - pulse * 7;
+    ctx.beginPath();
+    ctx.moveTo(arrowX - 6, arrowTip + 10);
+    ctx.lineTo(arrowX, arrowTip);
+    ctx.lineTo(arrowX + 6, arrowTip + 10);
+    ctx.stroke();
+    ctx.restore();
+  });
 
   // SPIKES - TEXTURA skikes.png (rendered larger than hitbox, anchored to ground)
   spikes.forEach(s => {

@@ -5,14 +5,41 @@
 <title>Výběr levelu</title>
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+<style>
+  .diff-section { width: 100%; margin-bottom: 18px; }
+  .diff-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px; padding: 0 4px;
+  }
+  .diff-label {
+    font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 2px;
+    padding: 3px 14px; border-radius: 20px; text-transform: uppercase;
+  }
+  .diff-label.easy   { background: #1a4a1a; color: #6dff6d; border: 1px solid #3aaa3a; }
+  .diff-label.medium { background: #1a2a4a; color: #6daeff; border: 1px solid #3a6aaa; }
+  .diff-label.hard   { background: #2a1a4a; color: #c06dff; border: 1px solid #7a3aaa; }
+  .diff-label.ultra  { background: #4a1a0a; color: #ff7040; border: 1px solid #aa4a1a; }
+  .diff-line { flex: 1; height: 1px; opacity: 0.3; }
+  .diff-line.easy   { background: #6dff6d; }
+  .diff-line.medium { background: #6daeff; }
+  .diff-line.hard   { background: #c06dff; }
+  .diff-line.ultra  { background: #ff7040; }
+  .level-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; }
+  .level-btn.easy   { border-color: #3aaa3a !important; }
+  .level-btn.medium { border-color: #3a6aaa !important; }
+  .level-btn.hard   { border-color: #7a3aaa !important; }
+  .level-btn.ultra  { border-color: #aa4a1a !important; color: #ff9060 !important; }
+  .level-btn.easy:hover   { background: rgba(58,170,58,0.25) !important; }
+  .level-btn.medium:hover { background: rgba(58,106,170,0.25) !important; }
+  .level-btn.hard:hover   { background: rgba(122,58,170,0.25) !important; }
+  .level-btn.ultra:hover  { background: rgba(170,74,26,0.3) !important; }
+</style>
 </head>
 
 <body>
 <div id="startScreen" class="scrollable">
   <h1>Choose Level</h1>
-
-  <div class="level-grid" id="levelGrid"></div>
-
+  <div id="levelContainer"></div>
   <div class="menuButtons" style="margin-top:22px; flex-direction:row; gap:12px;">
     <button onclick="location.href='shop.html?from=levels'">Shop</button>
     <button onclick="location.href='index.html'">Menu</button>
@@ -22,17 +49,45 @@
 <script src="levels.js"></script>
 <script src="music.js"></script>
 <script>
-  const container = document.getElementById('levelGrid');
+  const container = document.getElementById('levelContainer');
   let customLevels = [];
   try { customLevels = JSON.parse(localStorage.getItem('oldFartJumper_customLevels')) || []; } catch(e) {}
-  const totalLevels = BUILT_IN_LEVELS.length + customLevels.length;
-  for (let i = 0; i < totalLevels; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'level-btn';
-    btn.textContent = i + 1;
-    btn.onclick = () => location.href = 'game.html?level=' + i;
-    container.appendChild(btn);
-  }
+
+  const allLevels = BUILT_IN_LEVELS.concat(customLevels.map(l => ({ ...l, difficulty: 'custom' })));
+
+  const diffOrder = ['easy', 'medium', 'hard', 'ultra', 'custom'];
+  const diffNames = { easy: 'Easy', medium: 'Medium', hard: 'Hard', ultra: 'Ultra Hard', custom: 'Custom' };
+
+  // Group by difficulty preserving index
+  const groups = {};
+  diffOrder.forEach(d => groups[d] = []);
+  allLevels.forEach((lvl, i) => {
+    const d = lvl.difficulty || 'easy';
+    const key = groups[d] ? d : 'custom';
+    groups[key].push({ lvl, i });
+  });
+
+  diffOrder.forEach(diff => {
+    const entries = groups[diff];
+    if (!entries || entries.length === 0) return;
+    const section = document.createElement('div');
+    section.className = 'diff-section';
+    const header = document.createElement('div');
+    header.className = 'diff-header';
+    header.innerHTML = `<span class="diff-label ${diff}">${diffNames[diff]}</span><div class="diff-line ${diff}"></div>`;
+    section.appendChild(header);
+    const grid = document.createElement('div');
+    grid.className = 'level-grid';
+    entries.forEach(({ i }) => {
+      const btn = document.createElement('button');
+      btn.className = `level-btn ${diff}`;
+      btn.textContent = i + 1;
+      btn.onclick = () => location.href = 'game.html?level=' + i;
+      grid.appendChild(btn);
+    });
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
 </script>
 </body>
 </html>

@@ -1,129 +1,371 @@
 const BUILT_IN_LEVELS = [
-  // TUTORIAL
-  {
-    bg: 1,
-    length: 1800,
-    platforms: [
-      { x: 0, y: 580, width: 1800, height: 200 },
-      { x: 400, y: 550, width: 200, height: 20 },
-      { x: 700, y: 500, width: 200, height: 20 }
-    ],
-    spikes: [],
-    coins: [
-      { x: 420, y: 520, width: 20, height: 20 },
-      { x: 720, y: 470, width: 20, height: 20 },
-      { x: 900, y: 605, width: 20, height: 20 }
-    ],
-    winZone: { x: 1300, y: 575, width: 100, height: 50 }
-  },
-  // LEVEL 1
-  {
-    bg: 1,
-    length: 2000,
-    platforms: [
-      { x: 0, y: 580, width: 2000, height: 200 },
-      { x: 500, y: 550, width: 150, height: 20 },
-      { x: 800, y: 500, width: 150, height: 20 }
-    ],
-    spikes: [
-      { x: 900, y: 585, width: 40, height: 40 }
-    ],
-    coins: [
-      { x: 520, y: 520, width: 20, height: 20 },
-      { x: 820, y: 470, width: 20, height: 20 },
-      { x: 950, y: 605, width: 20, height: 20 },
-      { x: 1400, y: 605, width: 20, height: 20 }
-    ],
-    winZone: { x: 1500, y: 575, width: 100, height: 50 }
-  },
-  // LEVEL 2
-  {
-    bg: 1,
-    length: 2200,
-    platforms: [
-      { x: 0, y: 580, width: 2200, height: 200 },
-      { x: 600, y: 550, width: 120, height: 20 },
-      { x: 1100, y: 550, width: 120, height: 20 }
-    ],
-    spikes: [
-      { x: 800, y: 585, width: 40, height: 40 }
-    ],
-    coins: [
-      { x: 620, y: 520, width: 20, height: 20 },
-      { x: 1120, y: 520, width: 20, height: 20 },
-      { x: 850, y: 605, width: 20, height: 20 },
-      { x: 1500, y: 605, width: 20, height: 20 }
-    ],
-    winZone: { x: 1700, y: 575, width: 100, height: 50 }
-  },
-  // LEVEL 3
-  {
-    bg: 1,
-    length: 2400,
-    platforms: [
-      { x: 0, y: 580, width: 2400, height: 200 },
-      { x: 400, y: 550, width: 100, height: 20 },
-      { x: 650, y: 500, width: 100, height: 20 },
-      { x: 900, y: 450, width: 100, height: 20 }
-    ],
-    spikes: [
-      { x: 1000, y: 585, width: 40, height: 40 }
-    ],
-    coins: [
-      { x: 420, y: 520, width: 20, height: 20 },
-      { x: 670, y: 470, width: 20, height: 20 },
-      { x: 920, y: 420, width: 20, height: 20 },
-      { x: 1050, y: 605, width: 20, height: 20 },
-      { x: 1600, y: 605, width: 20, height: 20 }
-    ],
-    winZone: { x: 1900, y: 575, width: 100, height: 50 }
-  },
-  // LEVEL 4
-  {
-    bg: 1,
-    length: 2600,
-    platforms: [
-      { x: 0, y: 580, width: 2600, height: 200 },
-      { x: 500, y: 550, width: 80, height: 20 },
-      { x: 700, y: 500, width: 80, height: 20 },
-      { x: 900, y: 450, width: 80, height: 20 },
-      { x: 1100, y: 400, width: 80, height: 20 }
-    ],
-    spikes: [
-      { x: 1300, y: 585, width: 40, height: 40 },
-      { x: 1500, y: 585, width: 40, height: 40 }
-    ],
-    coins: [
-      { x: 520, y: 520, width: 20, height: 20 },
-      { x: 720, y: 470, width: 20, height: 20 },
-      { x: 920, y: 420, width: 20, height: 20 },
-      { x: 1120, y: 370, width: 20, height: 20 },
-      { x: 1350, y: 605, width: 20, height: 20 }
-    ],
-    winZone: { x: 2100, y: 575, width: 100, height: 50 }
-  },
-  // LEVEL 5
-  {
-    bg: 1,
-    length: 2800,
-    platforms: [
-      { x: 0, y: 580, width: 2800, height: 200 },
-      { x: 400, y: 550, width: 60, height: 20 },
-      { x: 550, y: 500, width: 60, height: 20 },
-      { x: 700, y: 450, width: 60, height: 20 }
-    ],
-    spikes: [
-      { x: 900, y: 585, width: 40, height: 40 },
-      { x: 1100, y: 585, width: 40, height: 40 },
-      { x: 1300, y: 585, width: 40, height: 40 }
-    ],
-    coins: [
-      { x: 420, y: 520, width: 20, height: 20 },
-      { x: 570, y: 470, width: 20, height: 20 },
-      { x: 720, y: 420, width: 20, height: 20 },
-      { x: 950, y: 605, width: 20, height: 20 },
-      { x: 1150, y: 605, width: 20, height: 20 }
-    ],
-    winZone: { x: 2300, y: 575, width: 100, height: 50 }
-  }
+  // ══ EASY ══════════════════════════════════════════════════════
+  { difficulty:'easy', bg:1, length:1800,
+    platforms:[{x:0,y:580,width:1800,height:200},{x:400,y:550,width:200,height:20},{x:700,y:500,width:200,height:20}],
+    spikes:[],bouncePads:[],movingPlatforms:[],
+    coins:[{x:420,y:520,width:20,height:20},{x:720,y:470,width:20,height:20},{x:900,y:605,width:20,height:20}],
+    winZone:{x:1300,y:575,width:100,height:50}},
+
+  { difficulty:'easy', bg:1, length:2000,
+    platforms:[{x:0,y:580,width:2000,height:200},{x:500,y:550,width:150,height:20},{x:800,y:500,width:150,height:20}],
+    spikes:[{x:900,y:585,width:40,height:40}],bouncePads:[],movingPlatforms:[],
+    coins:[{x:520,y:520,width:20,height:20},{x:820,y:470,width:20,height:20},{x:950,y:605,width:20,height:20},{x:1400,y:605,width:20,height:20}],
+    winZone:{x:1500,y:575,width:100,height:50}},
+
+  { difficulty:'easy', bg:1, length:2200,
+    platforms:[{x:0,y:580,width:2200,height:200},{x:600,y:550,width:120,height:20},{x:1100,y:550,width:120,height:20}],
+    spikes:[{x:800,y:585,width:40,height:40}],bouncePads:[],movingPlatforms:[],
+    coins:[{x:620,y:520,width:20,height:20},{x:1120,y:520,width:20,height:20},{x:850,y:605,width:20,height:20},{x:1500,y:605,width:20,height:20}],
+    winZone:{x:1700,y:575,width:100,height:50}},
+
+  { difficulty:'easy', bg:1, length:2400,
+    platforms:[{x:0,y:580,width:2400,height:200},{x:400,y:550,width:100,height:20},{x:650,y:500,width:100,height:20},{x:900,y:450,width:100,height:20}],
+    spikes:[{x:1000,y:585,width:40,height:40}],bouncePads:[],movingPlatforms:[],
+    coins:[{x:420,y:520,width:20,height:20},{x:670,y:470,width:20,height:20},{x:920,y:420,width:20,height:20},{x:1050,y:605,width:20,height:20},{x:1600,y:605,width:20,height:20}],
+    winZone:{x:1900,y:575,width:100,height:50}},
+
+  { difficulty:'easy', bg:1, length:2600,
+    platforms:[{x:0,y:580,width:2600,height:200},{x:500,y:550,width:80,height:20},{x:700,y:500,width:80,height:20},{x:900,y:450,width:80,height:20},{x:1100,y:400,width:80,height:20}],
+    spikes:[{x:1300,y:585,width:40,height:40},{x:1500,y:585,width:40,height:40}],bouncePads:[],movingPlatforms:[],
+    coins:[{x:520,y:520,width:20,height:20},{x:720,y:470,width:20,height:20},{x:920,y:420,width:20,height:20},{x:1120,y:370,width:20,height:20},{x:1350,y:605,width:20,height:20}],
+    winZone:{x:2100,y:575,width:100,height:50}},
+
+  { difficulty:'easy', bg:1, length:2800,
+    platforms:[{x:0,y:580,width:2800,height:200},{x:400,y:550,width:60,height:20},{x:550,y:500,width:60,height:20},{x:700,y:450,width:60,height:20}],
+    spikes:[{x:900,y:585,width:40,height:40},{x:1100,y:585,width:40,height:40},{x:1300,y:585,width:40,height:40}],bouncePads:[],movingPlatforms:[],
+    coins:[{x:420,y:520,width:20,height:20},{x:570,y:470,width:20,height:20},{x:720,y:420,width:20,height:20},{x:950,y:605,width:20,height:20},{x:1150,y:605,width:20,height:20}],
+    winZone:{x:2300,y:575,width:100,height:50}},
+
+  // ── EASY 7 — bounce pad intro ─────────────────────────────────
+  { difficulty:'easy', bg:1, length:3200,
+    platforms:[
+      {x:0,y:580,width:3200,height:200},
+      {x:450,y:500,width:120,height:20},{x:750,y:460,width:100,height:20},
+      {x:1250,y:430,width:100,height:20},{x:1550,y:500,width:120,height:20},
+      {x:1850,y:460,width:100,height:20},{x:2200,y:490,width:140,height:20},
+      {x:2600,y:470,width:120,height:20}],
+    spikes:[
+      {x:920,y:585,width:40,height:40},{x:970,y:585,width:40,height:40},
+      {x:1020,y:585,width:40,height:40},{x:1070,y:585,width:40,height:40},
+      {x:1700,y:585,width:40,height:40},{x:2050,y:585,width:40,height:40}],
+    bouncePads:[{x:840,y:608,width:80,height:17,power:26}],
+    movingPlatforms:[],
+    coins:[{x:470,y:470,width:20,height:20},{x:770,y:430,width:20,height:20},{x:870,y:580,width:20,height:20},{x:1270,y:400,width:20,height:20},{x:1570,y:470,width:20,height:20},{x:2620,y:440,width:20,height:20}],
+    winZone:{x:2950,y:575,width:100,height:50}},
+
+  // ── EASY 8 — moving platforms intro ──────────────────────────
+  { difficulty:'easy', bg:1, length:3000,
+    platforms:[
+      {x:0,y:580,width:780,height:200},{x:1220,y:580,width:580,height:200},{x:2050,y:580,width:950,height:200},
+      {x:480,y:470,width:120,height:20},{x:1350,y:470,width:110,height:20},
+      {x:1650,y:460,width:100,height:20},{x:2150,y:480,width:120,height:20},{x:2450,y:460,width:110,height:20}],
+    spikes:[{x:1270,y:585,width:40,height:40},{x:1730,y:585,width:40,height:40},{x:2150,y:585,width:40,height:40}],
+    bouncePads:[],
+    movingPlatforms:[
+      {startX:830,x:830,y:470,width:110,height:20,amplitude:180,speed:1.1},
+      {startX:1020,x:1020,y:510,width:90,height:20,amplitude:140,speed:1.4}],
+    coins:[{x:500,y:440,width:20,height:20},{x:880,y:440,width:20,height:20},{x:1060,y:480,width:20,height:20},{x:1370,y:440,width:20,height:20},{x:2470,y:430,width:20,height:20}],
+    winZone:{x:2750,y:575,width:100,height:50}},
+
+  // ── EASY 9 — bounce + moving mix ─────────────────────────────
+  { difficulty:'easy', bg:1, length:3500,
+    platforms:[
+      {x:0,y:580,width:950,height:200},{x:1300,y:580,width:600,height:200},{x:2150,y:580,width:1350,height:200},
+      {x:480,y:460,width:100,height:20},{x:700,y:430,width:100,height:20},
+      {x:1420,y:460,width:100,height:20},{x:1700,y:440,width:90,height:20},
+      {x:2300,y:450,width:110,height:20},{x:2600,y:430,width:100,height:20},{x:2900,y:460,width:120,height:20}],
+    spikes:[{x:820,y:585,width:40,height:40},{x:870,y:585,width:40,height:40},{x:2080,y:585,width:40,height:40},{x:2130,y:585,width:40,height:40}],
+    bouncePads:[{x:600,y:608,width:80,height:17,power:24},{x:1360,y:608,width:80,height:17,power:24}],
+    movingPlatforms:[
+      {startX:1010,x:1010,y:490,width:90,height:20,amplitude:160,speed:1.0},
+      {startX:1950,x:1950,y:480,width:90,height:20,amplitude:130,speed:1.3}],
+    coins:[{x:500,y:430,width:20,height:20},{x:720,y:400,width:20,height:20},{x:1060,y:460,width:20,height:20},{x:1440,y:430,width:20,height:20},{x:2620,y:400,width:20,height:20},{x:2920,y:430,width:20,height:20}],
+    winZone:{x:3200,y:575,width:100,height:50}},
+
+  // ══ MEDIUM ════════════════════════════════════════════════════
+  // ── MEDIUM 1 ─────────────────────────────────────────────────
+  { difficulty:'medium', bg:1, length:3600,
+    platforms:[
+      {x:0,y:580,width:600,height:200},{x:800,y:580,width:450,height:200},{x:1450,y:580,width:500,height:200},
+      {x:2150,y:580,width:350,height:200},{x:2700,y:580,width:900,height:200},
+      {x:400,y:450,width:80,height:20},{x:640,y:410,width:80,height:20},{x:870,y:460,width:80,height:20},
+      {x:1080,y:420,width:75,height:20},{x:1280,y:450,width:75,height:20},{x:1500,y:460,width:75,height:20},
+      {x:1710,y:420,width:70,height:20},{x:1950,y:450,width:70,height:20},{x:2180,y:410,width:70,height:20},
+      {x:2420,y:440,width:80,height:20},{x:2750,y:460,width:100,height:20},{x:3050,y:440,width:80,height:20}],
+    spikes:[
+      {x:610,y:585,width:40,height:40},{x:660,y:585,width:40,height:40},{x:710,y:585,width:40,height:40},{x:760,y:585,width:40,height:40},
+      {x:1260,y:585,width:40,height:40},{x:1310,y:585,width:40,height:40},{x:1360,y:585,width:40,height:40},{x:1410,y:585,width:40,height:40},
+      {x:2050,y:585,width:40,height:40},{x:2100,y:585,width:40,height:40},{x:2150,y:585,width:40,height:40},
+      {x:2500,y:585,width:40,height:40},{x:2550,y:585,width:40,height:40}],
+    bouncePads:[{x:530,y:608,width:70,height:17,power:23}],
+    movingPlatforms:[{startX:2500,x:2500,y:500,width:80,height:20,amplitude:130,speed:1.5}],
+    coins:[{x:420,y:420,width:20,height:20},{x:660,y:380,width:20,height:20},{x:890,y:430,width:20,height:20},{x:1100,y:390,width:20,height:20},{x:1730,y:390,width:20,height:20},{x:2200,y:380,width:20,height:20},{x:3070,y:410,width:20,height:20}],
+    winZone:{x:3300,y:575,width:100,height:50}},
+
+  // ── MEDIUM 2 ─────────────────────────────────────────────────
+  { difficulty:'medium', bg:1, length:3800,
+    platforms:[
+      {x:0,y:580,width:500,height:200},{x:750,y:580,width:350,height:200},{x:1300,y:580,width:400,height:200},
+      {x:1900,y:580,width:350,height:200},{x:2450,y:580,width:400,height:200},{x:3050,y:580,width:750,height:200},
+      {x:350,y:450,width:75,height:20},{x:850,y:440,width:75,height:20},{x:1100,y:410,width:70,height:20},
+      {x:1380,y:450,width:75,height:20},{x:1600,y:420,width:70,height:20},{x:1980,y:450,width:75,height:20},
+      {x:2200,y:420,width:70,height:20},{x:2520,y:450,width:80,height:20},{x:2780,y:430,width:70,height:20},
+      {x:3100,y:450,width:100,height:20},{x:3380,y:440,width:80,height:20}],
+    spikes:[
+      {x:510,y:585,width:40,height:40},{x:560,y:585,width:40,height:40},{x:610,y:585,width:40,height:40},{x:660,y:585,width:40,height:40},
+      {x:1110,y:585,width:40,height:40},{x:1160,y:585,width:40,height:40},{x:1210,y:585,width:40,height:40},{x:1260,y:585,width:40,height:40},
+      {x:2260,y:585,width:40,height:40},{x:2310,y:585,width:40,height:40},{x:2360,y:585,width:40,height:40},
+      {x:2860,y:585,width:40,height:40},{x:2910,y:585,width:40,height:40},{x:2960,y:585,width:40,height:40}],
+    bouncePads:[{x:430,y:608,width:70,height:17,power:24},{x:1200,y:608,width:70,height:17,power:24}],
+    movingPlatforms:[
+      {startX:680,x:680,y:480,width:80,height:20,amplitude:160,speed:1.6},
+      {startX:1760,x:1760,y:470,width:80,height:20,amplitude:110,speed:1.8},
+      {startX:2700,x:2700,y:490,width:80,height:20,amplitude:200,speed:1.4}],
+    coins:[{x:370,y:420,width:20,height:20},{x:720,y:450,width:20,height:20},{x:870,y:410,width:20,height:20},{x:1120,y:380,width:20,height:20},{x:1620,y:390,width:20,height:20},{x:2000,y:420,width:20,height:20},{x:2800,y:400,width:20,height:20},{x:3400,y:410,width:20,height:20}],
+    winZone:{x:3550,y:575,width:100,height:50}},
+
+  // ── MEDIUM 3 ─────────────────────────────────────────────────
+  { difficulty:'medium', bg:1, length:4000,
+    platforms:[
+      {x:0,y:580,width:450,height:200},{x:650,y:580,width:300,height:200},{x:1150,y:580,width:350,height:200},
+      {x:1700,y:580,width:350,height:200},{x:2250,y:580,width:300,height:200},{x:2750,y:580,width:350,height:200},{x:3300,y:580,width:700,height:200},
+      {x:280,y:450,width:65,height:20},{x:480,y:410,width:65,height:20},{x:700,y:460,width:65,height:20},
+      {x:910,y:420,width:65,height:20},{x:1070,y:460,width:65,height:20},{x:1210,y:440,width:65,height:20},
+      {x:1420,y:400,width:65,height:20},{x:1560,y:440,width:65,height:20},{x:1760,y:460,width:65,height:20},
+      {x:1960,y:410,width:65,height:20},{x:2140,y:450,width:65,height:20},{x:2310,y:430,width:65,height:20},
+      {x:2530,y:400,width:65,height:20},{x:2680,y:440,width:65,height:20},{x:2810,y:460,width:70,height:20},
+      {x:3020,y:420,width:65,height:20},{x:3180,y:450,width:65,height:20},{x:3380,y:460,width:100,height:20}],
+    spikes:[
+      {x:460,y:585,width:40,height:40},{x:510,y:585,width:40,height:40},{x:560,y:585,width:40,height:40},{x:610,y:585,width:40,height:40},
+      {x:960,y:585,width:40,height:40},{x:1010,y:585,width:40,height:40},{x:1060,y:585,width:40,height:40},{x:1110,y:585,width:40,height:40},
+      {x:2070,y:585,width:40,height:40},{x:2120,y:585,width:40,height:40},{x:2170,y:585,width:40,height:40},
+      {x:2620,y:585,width:40,height:40},{x:2670,y:585,width:40,height:40},{x:2720,y:585,width:40,height:40},
+      {x:3120,y:585,width:40,height:40},{x:3170,y:585,width:40,height:40},{x:3220,y:585,width:40,height:40},{x:3270,y:585,width:40,height:40}],
+    bouncePads:[{x:330,y:608,width:70,height:17,power:23},{x:1620,y:608,width:70,height:17,power:23},{x:2750,y:608,width:70,height:17,power:23}],
+    movingPlatforms:[
+      {startX:800,x:800,y:470,width:80,height:20,amplitude:130,speed:1.5},
+      {startX:1880,x:1880,y:460,width:75,height:20,amplitude:150,speed:1.7},
+      {startX:2920,x:2920,y:470,width:80,height:20,amplitude:160,speed:1.6}],
+    coins:[{x:300,y:420,width:20,height:20},{x:500,y:380,width:20,height:20},{x:930,y:390,width:20,height:20},{x:1440,y:370,width:20,height:20},{x:1780,y:430,width:20,height:20},{x:1980,y:380,width:20,height:20},{x:2330,y:400,width:20,height:20},{x:3040,y:390,width:20,height:20}],
+    winZone:{x:3680,y:575,width:100,height:50}},
+
+  // ══ HARD ══════════════════════════════════════════════════════
+  // ── HARD 1 ───────────────────────────────────────────────────
+  { difficulty:'hard', bg:1, length:4000,
+    platforms:[
+      {x:0,y:580,width:400,height:200},{x:580,y:580,width:300,height:200},{x:1050,y:580,width:300,height:200},
+      {x:1530,y:580,width:300,height:200},{x:2010,y:580,width:280,height:200},{x:2480,y:580,width:300,height:200},
+      {x:2960,y:580,width:350,height:200},{x:3480,y:580,width:520,height:200},
+      {x:250,y:450,width:55,height:20},{x:430,y:410,width:55,height:20},{x:630,y:460,width:55,height:20},
+      {x:820,y:420,width:55,height:20},{x:1000,y:450,width:55,height:20},{x:1110,y:420,width:50,height:20},
+      {x:1320,y:390,width:50,height:20},{x:1470,y:430,width:50,height:20},{x:1590,y:450,width:50,height:20},
+      {x:1790,y:400,width:50,height:20},{x:1930,y:440,width:50,height:20},{x:2060,y:460,width:50,height:20},
+      {x:2250,y:410,width:50,height:20},{x:2390,y:450,width:50,height:20},{x:2540,y:430,width:55,height:20},
+      {x:2730,y:400,width:50,height:20},{x:2870,y:440,width:50,height:20},{x:3010,y:460,width:55,height:20},
+      {x:3200,y:420,width:55,height:20},{x:3360,y:450,width:55,height:20},{x:3540,y:460,width:80,height:20}],
+    spikes:[
+      {x:400,y:585,width:40,height:40},{x:450,y:585,width:40,height:40},{x:500,y:585,width:40,height:40},{x:540,y:585,width:40,height:40},
+      {x:880,y:585,width:40,height:40},{x:930,y:585,width:40,height:40},{x:980,y:585,width:40,height:40},
+      {x:1350,y:585,width:40,height:40},{x:1400,y:585,width:40,height:40},{x:1450,y:585,width:40,height:40},
+      {x:1830,y:585,width:40,height:40},{x:1880,y:585,width:40,height:40},{x:1930,y:585,width:40,height:40},
+      {x:2290,y:585,width:40,height:40},{x:2340,y:585,width:40,height:40},{x:2390,y:585,width:40,height:40},
+      {x:2780,y:585,width:40,height:40},{x:2830,y:585,width:40,height:40},{x:2880,y:585,width:40,height:40},
+      {x:3240,y:585,width:40,height:40},{x:3290,y:585,width:40,height:40},{x:3340,y:585,width:40,height:40},
+      {x:3410,y:585,width:40,height:40},{x:3460,y:585,width:40,height:40}],
+    bouncePads:[{x:310,y:608,width:60,height:17,power:25},{x:1870,y:608,width:60,height:17,power:25},{x:3050,y:608,width:60,height:17,power:25}],
+    movingPlatforms:[
+      {startX:700,x:700,y:470,width:70,height:20,amplitude:200,speed:1.8},
+      {startX:2130,x:2130,y:460,width:65,height:20,amplitude:170,speed:2.0},
+      {startX:3130,x:3130,y:470,width:70,height:20,amplitude:190,speed:1.9}],
+    coins:[{x:270,y:420,width:20,height:20},{x:450,y:380,width:20,height:20},{x:840,y:390,width:20,height:20},{x:1810,y:370,width:20,height:20},{x:2270,y:380,width:20,height:20},{x:2750,y:370,width:20,height:20},{x:3560,y:430,width:20,height:20}],
+    winZone:{x:3720,y:575,width:100,height:50}},
+
+  // ── HARD 2 ───────────────────────────────────────────────────
+  { difficulty:'hard', bg:1, length:4200,
+    platforms:[
+      {x:0,y:580,width:350,height:200},{x:520,y:580,width:280,height:200},{x:980,y:580,width:280,height:200},
+      {x:1440,y:580,width:280,height:200},{x:1900,y:580,width:280,height:200},{x:2360,y:580,width:280,height:200},
+      {x:2820,y:580,width:300,height:200},{x:3300,y:580,width:300,height:200},{x:3750,y:580,width:450,height:200},
+      {x:200,y:440,width:45,height:20},{x:400,y:400,width:45,height:20},{x:570,y:450,width:45,height:20},
+      {x:740,y:410,width:45,height:20},{x:890,y:450,width:45,height:20},{x:1040,y:420,width:45,height:20},
+      {x:1220,y:390,width:45,height:20},{x:1380,y:440,width:45,height:20},{x:1500,y:460,width:45,height:20},
+      {x:1680,y:410,width:45,height:20},{x:1830,y:450,width:45,height:20},{x:1960,y:430,width:45,height:20},
+      {x:2160,y:400,width:45,height:20},{x:2300,y:445,width:45,height:20},{x:2420,y:450,width:45,height:20},
+      {x:2600,y:410,width:45,height:20},{x:2740,y:450,width:45,height:20},{x:2880,y:430,width:45,height:20},
+      {x:3060,y:400,width:45,height:20},{x:3200,y:440,width:45,height:20},{x:3360,y:450,width:50,height:20},
+      {x:3560,y:420,width:50,height:20},{x:3780,y:450,width:80,height:20}],
+    spikes:[
+      {x:350,y:585,width:40,height:40},{x:395,y:585,width:40,height:40},{x:440,y:585,width:40,height:40},{x:485,y:585,width:40,height:40},
+      {x:800,y:585,width:40,height:40},{x:845,y:585,width:40,height:40},{x:890,y:585,width:40,height:40},{x:940,y:585,width:40,height:40},
+      {x:1260,y:585,width:40,height:40},{x:1305,y:585,width:40,height:40},{x:1350,y:585,width:40,height:40},{x:1400,y:585,width:40,height:40},
+      {x:1720,y:585,width:40,height:40},{x:1765,y:585,width:40,height:40},{x:1810,y:585,width:40,height:40},{x:1860,y:585,width:40,height:40},
+      {x:2200,y:585,width:40,height:40},{x:2245,y:585,width:40,height:40},{x:2290,y:585,width:40,height:40},
+      {x:2640,y:585,width:40,height:40},{x:2685,y:585,width:40,height:40},{x:2730,y:585,width:40,height:40},{x:2780,y:585,width:40,height:40},
+      {x:3120,y:585,width:40,height:40},{x:3165,y:585,width:40,height:40},{x:3210,y:585,width:40,height:40},{x:3260,y:585,width:40,height:40},
+      {x:3620,y:585,width:40,height:40},{x:3665,y:585,width:40,height:40},{x:3710,y:585,width:40,height:40}],
+    bouncePads:[{x:230,y:608,width:55,height:17,power:25},{x:1240,y:608,width:55,height:17,power:25},{x:2680,y:608,width:55,height:17,power:25}],
+    movingPlatforms:[
+      {startX:630,x:630,y:465,width:65,height:20,amplitude:220,speed:2.0},
+      {startX:1580,x:1580,y:460,width:60,height:20,amplitude:210,speed:2.2},
+      {startX:2980,x:2980,y:460,width:65,height:20,amplitude:200,speed:2.1}],
+    coins:[{x:220,y:410,width:20,height:20},{x:760,y:380,width:20,height:20},{x:1700,y:380,width:20,height:20},{x:3080,y:370,width:20,height:20},{x:3800,y:420,width:20,height:20}],
+    winZone:{x:3960,y:575,width:100,height:50}},
+
+  // ── HARD 3 ───────────────────────────────────────────────────
+  { difficulty:'hard', bg:1, length:4500,
+    platforms:[
+      {x:0,y:580,width:300,height:200},{x:470,y:580,width:250,height:200},{x:900,y:580,width:250,height:200},
+      {x:1330,y:580,width:250,height:200},{x:1760,y:580,width:250,height:200},{x:2190,y:580,width:250,height:200},
+      {x:2620,y:580,width:250,height:200},{x:3050,y:580,width:250,height:200},{x:3480,y:580,width:250,height:200},{x:3930,y:580,width:570,height:200},
+      {x:160,y:440,width:40,height:20},{x:330,y:400,width:40,height:20},{x:520,y:455,width:40,height:20},
+      {x:680,y:415,width:40,height:20},{x:840,y:455,width:40,height:20},{x:960,y:420,width:40,height:20},
+      {x:1120,y:385,width:40,height:20},{x:1270,y:435,width:40,height:20},{x:1390,y:455,width:40,height:20},
+      {x:1560,y:405,width:40,height:20},{x:1710,y:450,width:40,height:20},{x:1820,y:420,width:40,height:20},
+      {x:2000,y:385,width:40,height:20},{x:2140,y:435,width:40,height:20},{x:2250,y:455,width:40,height:20},
+      {x:2440,y:405,width:40,height:20},{x:2580,y:450,width:40,height:20},{x:2680,y:415,width:40,height:20},
+      {x:2860,y:385,width:40,height:20},{x:3000,y:435,width:40,height:20},{x:3110,y:455,width:40,height:20},
+      {x:3290,y:405,width:40,height:20},{x:3430,y:450,width:40,height:20},{x:3540,y:415,width:40,height:20},
+      {x:3720,y:385,width:40,height:20},{x:3870,y:440,width:40,height:20},{x:3980,y:455,width:80,height:20}],
+    spikes:[
+      {x:300,y:585,width:40,height:40},{x:345,y:585,width:40,height:40},{x:390,y:585,width:40,height:40},{x:435,y:585,width:40,height:40},
+      {x:720,y:585,width:40,height:40},{x:765,y:585,width:40,height:40},{x:810,y:585,width:40,height:40},{x:860,y:585,width:40,height:40},
+      {x:1150,y:585,width:40,height:40},{x:1195,y:585,width:40,height:40},{x:1240,y:585,width:40,height:40},{x:1290,y:585,width:40,height:40},
+      {x:1580,y:585,width:40,height:40},{x:1625,y:585,width:40,height:40},{x:1670,y:585,width:40,height:40},{x:1720,y:585,width:40,height:40},
+      {x:2010,y:585,width:40,height:40},{x:2055,y:585,width:40,height:40},{x:2100,y:585,width:40,height:40},{x:2150,y:585,width:40,height:40},
+      {x:2460,y:585,width:40,height:40},{x:2505,y:585,width:40,height:40},{x:2550,y:585,width:40,height:40},
+      {x:2870,y:585,width:40,height:40},{x:2915,y:585,width:40,height:40},{x:2960,y:585,width:40,height:40},{x:3010,y:585,width:40,height:40},
+      {x:3300,y:585,width:40,height:40},{x:3345,y:585,width:40,height:40},{x:3390,y:585,width:40,height:40},{x:3440,y:585,width:40,height:40},
+      {x:3730,y:585,width:40,height:40},{x:3775,y:585,width:40,height:40},{x:3820,y:585,width:40,height:40},{x:3870,y:585,width:40,height:40}],
+    bouncePads:[{x:200,y:608,width:55,height:17,power:26},{x:1190,y:608,width:55,height:17,power:26},{x:2070,y:608,width:55,height:17,power:26},{x:2930,y:608,width:55,height:17,power:26}],
+    movingPlatforms:[
+      {startX:580,x:580,y:470,width:60,height:20,amplitude:230,speed:2.2},
+      {startX:1460,x:1460,y:465,width:60,height:20,amplitude:240,speed:2.3},
+      {startX:2320,x:2320,y:465,width:60,height:20,amplitude:220,speed:2.4},
+      {startX:3560,x:3560,y:465,width:60,height:20,amplitude:250,speed:2.2}],
+    coins:[{x:180,y:410,width:20,height:20},{x:700,y:385,width:20,height:20},{x:1580,y:375,width:20,height:20},{x:2880,y:355,width:20,height:20},{x:3740,y:355,width:20,height:20}],
+    winZone:{x:4230,y:575,width:100,height:50}},
+
+  // ══ ULTRA HARD ════════════════════════════════════════════════
+  // ── ULTRA 1 ──────────────────────────────────────────────────
+  { difficulty:'ultra', bg:1, length:4200,
+    platforms:[
+      {x:0,y:580,width:280,height:200},{x:430,y:580,width:240,height:200},{x:830,y:580,width:240,height:200},
+      {x:1230,y:580,width:240,height:200},{x:1630,y:580,width:240,height:200},{x:2030,y:580,width:240,height:200},
+      {x:2430,y:580,width:240,height:200},{x:2830,y:580,width:240,height:200},{x:3230,y:580,width:240,height:200},{x:3630,y:580,width:570,height:200},
+      {x:130,y:440,width:35,height:20},{x:280,y:400,width:35,height:20},{x:480,y:450,width:35,height:20},
+      {x:640,y:410,width:35,height:20},{x:790,y:450,width:35,height:20},{x:890,y:415,width:35,height:20},
+      {x:1060,y:380,width:35,height:20},{x:1180,y:430,width:35,height:20},{x:1290,y:450,width:35,height:20},
+      {x:1470,y:405,width:35,height:20},{x:1600,y:445,width:35,height:20},{x:1690,y:410,width:35,height:20},
+      {x:1870,y:375,width:35,height:20},{x:2000,y:425,width:35,height:20},{x:2090,y:450,width:35,height:20},
+      {x:2260,y:400,width:35,height:20},{x:2390,y:445,width:35,height:20},{x:2490,y:415,width:35,height:20},
+      {x:2660,y:380,width:35,height:20},{x:2790,y:430,width:35,height:20},{x:2890,y:450,width:35,height:20},
+      {x:3060,y:400,width:35,height:20},{x:3190,y:445,width:35,height:20},{x:3290,y:415,width:35,height:20},
+      {x:3460,y:380,width:35,height:20},{x:3590,y:440,width:35,height:20},{x:3700,y:450,width:70,height:20}],
+    spikes:[
+      {x:280,y:585,width:40,height:40},{x:325,y:585,width:40,height:40},{x:370,y:585,width:40,height:40},{x:415,y:585,width:40,height:40},
+      {x:670,y:585,width:40,height:40},{x:715,y:585,width:40,height:40},{x:760,y:585,width:40,height:40},{x:805,y:585,width:40,height:40},
+      {x:1070,y:585,width:40,height:40},{x:1115,y:585,width:40,height:40},{x:1160,y:585,width:40,height:40},{x:1205,y:585,width:40,height:40},
+      {x:1470,y:585,width:40,height:40},{x:1515,y:585,width:40,height:40},{x:1560,y:585,width:40,height:40},{x:1605,y:585,width:40,height:40},
+      {x:1870,y:585,width:40,height:40},{x:1915,y:585,width:40,height:40},{x:1960,y:585,width:40,height:40},{x:2005,y:585,width:40,height:40},
+      {x:2270,y:585,width:40,height:40},{x:2315,y:585,width:40,height:40},{x:2360,y:585,width:40,height:40},{x:2405,y:585,width:40,height:40},
+      {x:2670,y:585,width:40,height:40},{x:2715,y:585,width:40,height:40},{x:2760,y:585,width:40,height:40},{x:2805,y:585,width:40,height:40},
+      {x:3070,y:585,width:40,height:40},{x:3115,y:585,width:40,height:40},{x:3160,y:585,width:40,height:40},{x:3205,y:585,width:40,height:40},
+      {x:3470,y:585,width:40,height:40},{x:3515,y:585,width:40,height:40},{x:3560,y:585,width:40,height:40},{x:3605,y:585,width:40,height:40}],
+    bouncePads:[{x:160,y:608,width:50,height:17,power:27},{x:1000,y:608,width:50,height:17,power:27},{x:1810,y:608,width:50,height:17,power:27},{x:2600,y:608,width:50,height:17,power:27},{x:3400,y:608,width:50,height:17,power:27}],
+    movingPlatforms:[
+      {startX:540,x:540,y:465,width:55,height:20,amplitude:230,speed:2.4},
+      {startX:1370,x:1370,y:460,width:55,height:20,amplitude:240,speed:2.6},
+      {startX:2160,x:2160,y:465,width:55,height:20,amplitude:250,speed:2.5},
+      {startX:2960,x:2960,y:460,width:55,height:20,amplitude:240,speed:2.7}],
+    coins:[{x:150,y:410,width:20,height:20},{x:660,y:380,width:20,height:20},{x:1490,y:375,width:20,height:20},{x:2280,y:370,width:20,height:20},{x:3080,y:370,width:20,height:20}],
+    winZone:{x:3950,y:575,width:100,height:50}},
+
+  // ── ULTRA 2 ──────────────────────────────────────────────────
+  { difficulty:'ultra', bg:1, length:4500,
+    platforms:[
+      {x:0,y:580,width:250,height:200},{x:420,y:580,width:200,height:200},{x:780,y:580,width:200,height:200},
+      {x:1140,y:580,width:200,height:200},{x:1500,y:580,width:200,height:200},{x:1860,y:580,width:200,height:200},
+      {x:2220,y:580,width:200,height:200},{x:2580,y:580,width:200,height:200},{x:2940,y:580,width:200,height:200},
+      {x:3300,y:580,width:200,height:200},{x:3660,y:580,width:200,height:200},{x:4020,y:580,width:480,height:200},
+      {x:110,y:440,width:30,height:20},{x:250,y:395,width:30,height:20},{x:430,y:450,width:30,height:20},
+      {x:600,y:410,width:30,height:20},{x:740,y:450,width:30,height:20},{x:840,y:410,width:30,height:20},
+      {x:1000,y:375,width:30,height:20},{x:1110,y:430,width:30,height:20},{x:1200,y:450,width:30,height:20},
+      {x:1380,y:400,width:30,height:20},{x:1500,y:445,width:30,height:20},{x:1600,y:405,width:30,height:20},
+      {x:1770,y:370,width:30,height:20},{x:1870,y:425,width:30,height:20},{x:1970,y:445,width:30,height:20},
+      {x:2140,y:395,width:30,height:20},{x:2240,y:445,width:30,height:20},{x:2340,y:410,width:30,height:20},
+      {x:2510,y:375,width:30,height:20},{x:2600,y:430,width:30,height:20},{x:2700,y:450,width:30,height:20},
+      {x:2870,y:400,width:30,height:20},{x:2970,y:445,width:30,height:20},{x:3070,y:410,width:30,height:20},
+      {x:3230,y:375,width:30,height:20},{x:3340,y:430,width:30,height:20},{x:3440,y:450,width:30,height:20},
+      {x:3600,y:400,width:30,height:20},{x:3700,y:445,width:30,height:20},{x:3800,y:410,width:30,height:20},
+      {x:3960,y:375,width:30,height:20},{x:4070,y:450,width:70,height:20}],
+    spikes:[
+      {x:250,y:585,width:40,height:40},{x:295,y:585,width:40,height:40},{x:340,y:585,width:40,height:40},{x:385,y:585,width:40,height:40},
+      {x:620,y:585,width:40,height:40},{x:665,y:585,width:40,height:40},{x:710,y:585,width:40,height:40},{x:755,y:585,width:40,height:40},
+      {x:980,y:585,width:40,height:40},{x:1025,y:585,width:40,height:40},{x:1070,y:585,width:40,height:40},{x:1115,y:585,width:40,height:40},
+      {x:1340,y:585,width:40,height:40},{x:1385,y:585,width:40,height:40},{x:1430,y:585,width:40,height:40},{x:1475,y:585,width:40,height:40},
+      {x:1700,y:585,width:40,height:40},{x:1745,y:585,width:40,height:40},{x:1790,y:585,width:40,height:40},{x:1835,y:585,width:40,height:40},
+      {x:2060,y:585,width:40,height:40},{x:2105,y:585,width:40,height:40},{x:2150,y:585,width:40,height:40},{x:2195,y:585,width:40,height:40},
+      {x:2420,y:585,width:40,height:40},{x:2465,y:585,width:40,height:40},{x:2510,y:585,width:40,height:40},{x:2555,y:585,width:40,height:40},
+      {x:2780,y:585,width:40,height:40},{x:2825,y:585,width:40,height:40},{x:2870,y:585,width:40,height:40},{x:2915,y:585,width:40,height:40},
+      {x:3140,y:585,width:40,height:40},{x:3185,y:585,width:40,height:40},{x:3230,y:585,width:40,height:40},{x:3275,y:585,width:40,height:40},
+      {x:3500,y:585,width:40,height:40},{x:3545,y:585,width:40,height:40},{x:3590,y:585,width:40,height:40},{x:3635,y:585,width:40,height:40},
+      {x:3860,y:585,width:40,height:40},{x:3905,y:585,width:40,height:40},{x:3950,y:585,width:40,height:40},{x:3995,y:585,width:40,height:40}],
+    bouncePads:[{x:130,y:608,width:45,height:17,power:28},{x:870,y:608,width:45,height:17,power:28},{x:1630,y:608,width:45,height:17,power:28},{x:2390,y:608,width:45,height:17,power:28},{x:3150,y:608,width:45,height:17,power:28},{x:3910,y:608,width:45,height:17,power:28}],
+    movingPlatforms:[
+      {startX:490,x:490,y:465,width:50,height:20,amplitude:230,speed:2.7},
+      {startX:1250,x:1250,y:460,width:50,height:20,amplitude:250,speed:2.9},
+      {startX:2010,x:2010,y:462,width:50,height:20,amplitude:240,speed:3.0},
+      {startX:2770,x:2770,y:460,width:50,height:20,amplitude:250,speed:2.8},
+      {startX:3530,x:3530,y:462,width:50,height:20,amplitude:240,speed:3.0}],
+    coins:[{x:125,y:410,width:20,height:20},{x:620,y:380,width:20,height:20},{x:1790,y:340,width:20,height:20},{x:2530,y:345,width:20,height:20},{x:3250,y:345,width:20,height:20}],
+    winZone:{x:4250,y:575,width:100,height:50}},
+
+  // ── ULTRA 3 ──────────────────────────────────────────────────
+  { difficulty:'ultra', bg:1, length:5000,
+    platforms:[
+      {x:0,y:580,width:220,height:200},{x:380,y:580,width:180,height:200},{x:720,y:580,width:180,height:200},
+      {x:1060,y:580,width:180,height:200},{x:1400,y:580,width:180,height:200},{x:1740,y:580,width:180,height:200},
+      {x:2080,y:580,width:180,height:200},{x:2420,y:580,width:180,height:200},{x:2760,y:580,width:180,height:200},
+      {x:3100,y:580,width:180,height:200},{x:3440,y:580,width:180,height:200},{x:3780,y:580,width:180,height:200},
+      {x:4120,y:580,width:180,height:200},{x:4460,y:580,width:540,height:200},
+      {x:90,y:440,width:28,height:20},{x:230,y:395,width:28,height:20},{x:390,y:450,width:28,height:20},
+      {x:545,y:408,width:28,height:20},{x:690,y:450,width:28,height:20},{x:790,y:408,width:28,height:20},
+      {x:940,y:372,width:28,height:20},{x:1080,y:428,width:28,height:20},{x:1160,y:448,width:28,height:20},
+      {x:1330,y:395,width:28,height:20},{x:1460,y:445,width:28,height:20},{x:1550,y:400,width:28,height:20},
+      {x:1720,y:365,width:28,height:20},{x:1810,y:420,width:28,height:20},{x:1900,y:445,width:28,height:20},
+      {x:2070,y:390,width:28,height:20},{x:2160,y:445,width:28,height:20},{x:2250,y:405,width:28,height:20},
+      {x:2420,y:368,width:28,height:20},{x:2510,y:425,width:28,height:20},{x:2600,y:448,width:28,height:20},
+      {x:2770,y:392,width:28,height:20},{x:2860,y:445,width:28,height:20},{x:2950,y:408,width:28,height:20},
+      {x:3110,y:370,width:28,height:20},{x:3200,y:428,width:28,height:20},{x:3290,y:448,width:28,height:20},
+      {x:3460,y:392,width:28,height:20},{x:3550,y:445,width:28,height:20},{x:3640,y:408,width:28,height:20},
+      {x:3800,y:368,width:28,height:20},{x:3890,y:425,width:28,height:20},{x:3980,y:448,width:28,height:20},
+      {x:4150,y:390,width:28,height:20},{x:4240,y:445,width:28,height:20},{x:4330,y:405,width:28,height:20},
+      {x:4510,y:450,width:70,height:20}],
+    spikes:[
+      {x:220,y:585,width:40,height:40},{x:265,y:585,width:40,height:40},{x:310,y:585,width:40,height:40},{x:355,y:585,width:40,height:40},
+      {x:560,y:585,width:40,height:40},{x:605,y:585,width:40,height:40},{x:650,y:585,width:40,height:40},{x:695,y:585,width:40,height:40},
+      {x:900,y:585,width:40,height:40},{x:945,y:585,width:40,height:40},{x:990,y:585,width:40,height:40},{x:1035,y:585,width:40,height:40},
+      {x:1240,y:585,width:40,height:40},{x:1285,y:585,width:40,height:40},{x:1330,y:585,width:40,height:40},{x:1375,y:585,width:40,height:40},
+      {x:1580,y:585,width:40,height:40},{x:1625,y:585,width:40,height:40},{x:1670,y:585,width:40,height:40},{x:1715,y:585,width:40,height:40},
+      {x:1920,y:585,width:40,height:40},{x:1965,y:585,width:40,height:40},{x:2010,y:585,width:40,height:40},{x:2055,y:585,width:40,height:40},
+      {x:2260,y:585,width:40,height:40},{x:2305,y:585,width:40,height:40},{x:2350,y:585,width:40,height:40},{x:2395,y:585,width:40,height:40},
+      {x:2600,y:585,width:40,height:40},{x:2645,y:585,width:40,height:40},{x:2690,y:585,width:40,height:40},{x:2735,y:585,width:40,height:40},
+      {x:2940,y:585,width:40,height:40},{x:2985,y:585,width:40,height:40},{x:3030,y:585,width:40,height:40},{x:3075,y:585,width:40,height:40},
+      {x:3280,y:585,width:40,height:40},{x:3325,y:585,width:40,height:40},{x:3370,y:585,width:40,height:40},{x:3415,y:585,width:40,height:40},
+      {x:3620,y:585,width:40,height:40},{x:3665,y:585,width:40,height:40},{x:3710,y:585,width:40,height:40},{x:3755,y:585,width:40,height:40},
+      {x:3960,y:585,width:40,height:40},{x:4005,y:585,width:40,height:40},{x:4050,y:585,width:40,height:40},{x:4095,y:585,width:40,height:40},
+      {x:4300,y:585,width:40,height:40},{x:4345,y:585,width:40,height:40},{x:4390,y:585,width:40,height:40},{x:4435,y:585,width:40,height:40}],
+    bouncePads:[
+      {x:115,y:608,width:42,height:17,power:29},{x:775,y:608,width:42,height:17,power:29},
+      {x:1435,y:608,width:42,height:17,power:29},{x:2095,y:608,width:42,height:17,power:29},
+      {x:2755,y:608,width:42,height:17,power:29},{x:3415,y:608,width:42,height:17,power:29},{x:4075,y:608,width:42,height:17,power:29}],
+    movingPlatforms:[
+      {startX:440,x:440,y:465,width:46,height:20,amplitude:230,speed:3.0},
+      {startX:1120,x:1120,y:460,width:46,height:20,amplitude:250,speed:3.2},
+      {startX:1800,x:1800,y:462,width:46,height:20,amplitude:240,speed:3.1},
+      {startX:2460,x:2460,y:460,width:46,height:20,amplitude:260,speed:3.3},
+      {startX:3120,x:3120,y:462,width:46,height:20,amplitude:250,speed:3.2},
+      {startX:3780,x:3780,y:460,width:46,height:20,amplitude:260,speed:3.4}],
+    coins:[{x:108,y:410,width:20,height:20},{x:561,y:378,width:20,height:20},{x:1741,y:335,width:20,height:20},{x:2441,y:338,width:20,height:20},{x:3131,y:340,width:20,height:20}],
+    winZone:{x:4720,y:575,width:100,height:50}}
 ];
